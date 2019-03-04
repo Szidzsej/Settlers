@@ -1,0 +1,4 @@
+D:\Pródzsekt munka\Settlers\Settlers\SettlersContent\obj\x86\Debug\SettlersContent.contentprojAssemblyReference.cache
+D:\Pródzsekt munka\Settlers\Settlers\SettlersContent\obj\x86\Debug\SettlersContent.contentproj.CoreCompileInputs.cache
+E:\Mentés\Pródzsekt munka\Settlers\Settlers\SettlersContent\obj\x86\Debug\SettlersContent.contentprojAssemblyReference.cache
+E:\Mentés\Pródzsekt munka\Settlers\Settlers\SettlersContent\obj\x86\Debug\SettlersContent.contentproj.CoreCompileInputs.cache
