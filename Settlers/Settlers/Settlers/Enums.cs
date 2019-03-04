@@ -19,4 +19,13 @@ namespace Settlers
         Down = 2,
         Left = 3
     }
+    public enum TileState
+    {
+        Grass = 0,
+        Tree = 1,
+        Stone = 2,
+        Menu = 3,
+        Building = 4
+        
+    }
 }

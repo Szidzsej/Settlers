@@ -11,9 +11,9 @@ namespace Settlers
     {
         public Rectangle Rectangle { get; set; }
         public Texture2D Texture { get; set; }
-        public bool State { get; set; }
+        public TileState State { get; set; }
 
-        public Tile(Rectangle iRectangle, Texture2D ITexture, bool iState)
+        public Tile(Rectangle iRectangle, Texture2D ITexture, TileState iState)
         {
             this.Rectangle = iRectangle;
             this.Texture = ITexture;

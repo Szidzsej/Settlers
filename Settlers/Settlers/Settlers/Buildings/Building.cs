@@ -18,6 +18,7 @@ namespace Settlers
 
         public Rectangle NextStep { get; set; }
         public bool IsMoving { get; set; }
+        public Vector2 Origin;
 
         public Building(int id, Rectangle iRectangle, Texture2D ITexture, int bTID, int coor)
         {
@@ -26,6 +27,7 @@ namespace Settlers
             this.ID = id;
             this.BuildingTypeID = bTID;
             this.Coordinate = coor;
+            this.Origin = new Vector2(ITexture.Width / 2, ITexture.Height / 2);
         }
         public Building(int id,  int bTID, int coor)
         {
@@ -42,34 +44,34 @@ namespace Settlers
         }
         public void Draw(SpriteBatch sprite)
         {
-            sprite.Draw(this.Texture, this.Rectangle, Color.White);
+            sprite.Draw(this.Texture, new Rectangle(this.Bounds.X, this.Bounds.Y, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), null, Color.White,0, this.Origin, SpriteEffects.None, 0f);
         }
         public void Update()
         {
             if (this.IsMoving)
             {
-                if (this.Bounds.X != this.NextStep.X || this.Bounds.Y != this.NextStep.Y)
+                if (this.Bounds.X != this.NextStep.X || this.Bounds.Y != this.NextStep.Y )
                 {
                     if (this.Bounds.X != this.NextStep.X)
                     {
-                        if (this.Bounds.X + Globals.BUILDINGSIZE < this.NextStep.X + Globals.BUILDINGSIZE)
+                        if ((this.Bounds.X + Globals.TILESIZE < this.NextStep.X + Globals.TILESIZE))
                         {
-                            this.Bounds = new Rectangle(this.Bounds.X + Globals.BUILDINGSIZE, this.Bounds.Y, this.Bounds.Width, this.Bounds.Height);
+                            this.Bounds = new Rectangle(this.Bounds.X + Globals.TILESIZE, this.Bounds.Y, this.Bounds.Width, this.Bounds.Height);
                         }
-                        else if (this.Bounds.X + Globals.BUILDINGSIZE > this.NextStep.X - Globals.BUILDINGSIZE)
+                        else if (this.Bounds.X + Globals.TILESIZE > this.NextStep.X - Globals.TILESIZE)
                         {
-                            this.Bounds = new Rectangle(this.Bounds.X - Globals.BUILDINGSIZE, this.Bounds.Y, this.Bounds.Width, this.Bounds.Height);
+                            this.Bounds = new Rectangle(this.Bounds.X - Globals.TILESIZE, this.Bounds.Y, this.Bounds.Width, this.Bounds.Height);
                         }
                     }
-                    if (this.Bounds.Y != this.NextStep.Y)
+                    if ((this.Bounds.Y != this.NextStep.Y))
                     {
-                        if (this.Bounds.Y + Globals.BUILDINGSIZE < this.NextStep.Y + Globals.BUILDINGSIZE)
+                        if (this.Bounds.Y + Globals.TILESIZE < this.NextStep.Y + Globals.TILESIZE)
                         {
-                            this.Bounds = new Rectangle(this.Bounds.X, this.Bounds.Y + Globals.BUILDINGSIZE, this.Bounds.Width, this.Bounds.Height);
+                            this.Bounds = new Rectangle(this.Bounds.X, this.Bounds.Y + Globals.TILESIZE, this.Bounds.Width, this.Bounds.Height);
                         }
-                        else if (this.Bounds.Y + Globals.BUILDINGSIZE > this.NextStep.Y - Globals.BUILDINGSIZE)
+                        else if (this.Bounds.Y + Globals.TILESIZE > this.NextStep.Y - Globals.TILESIZE)
                         {
-                            this.Bounds = new Rectangle(this.Bounds.X, this.Bounds.Y - Globals.BUILDINGSIZE, this.Bounds.Width, this.Bounds.Height);
+                            this.Bounds = new Rectangle(this.Bounds.X, this.Bounds.Y - Globals.TILESIZE, this.Bounds.Width, this.Bounds.Height);
                         }
                     }
                 }

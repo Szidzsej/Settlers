@@ -140,26 +140,40 @@ namespace Settlers
                 {
                     Tiles.Add(new Tile(
                     new Rectangle((j * Globals.TILESIZE), (i * Globals.TILESIZE), Globals.TILESIZE, Globals.TILESIZE),
-                    (a[i, j] == 0) ? grass : (a[i, j] == 1) ? tree : stone, 
-                    false));
+                    (a[i, j] == 0) ? grass : (a[i, j] == 1) ? tree : stone,
+                    (a[i, j] == 0) ? TileState.Grass : (a[i, j] == 1) ? TileState.Tree : TileState.Stone));
                 }
             }
-            Tiles.Add(new Tile(new Rectangle(xMapEnd + Globals.TILESIZE, 0, 200, 600), buildingMenu, false));
+            Tiles.Add(new Tile(new Rectangle(xMapEnd + Globals.TILESIZE, 0, 200, 600), buildingMenu, TileState.Menu));
 
         }
         public void MoveBuilding(Direction iDirection, int iID)
         {
             var a = Buildings.FirstOrDefault(x => x.ID == iID);
-            if (!a.IsMoving)
-                if (CheckTile(iDirection, iID))
-                    a.AnimatedUpdate(iDirection);
+            if (CheckTile(iDirection, iID))
+                a.AnimatedUpdate(iDirection);
         }
 
         private bool CheckTile(Direction iDirection, int iID)
         {
             var a = Buildings.FirstOrDefault(x => x.ID == iID).Step(iDirection);
 
-            return this.Buildings.FindAll(x => x.ID != iID).Any(x => x.Bounds.X == a.X && x.Bounds.Y == a.Y) ? false : true;
+            if (this.Buildings.FindAll(x => x.ID != iID).Any(x => x.Bounds.X == a.X && x.Bounds.Y == a.Y))
+            {
+                return true;
+            }
+            List<Tile> tileHelp = this.Tiles.FindAll(x => ((x.Rectangle.X == a.X) && (x.Rectangle.Y == a.Y)) || (((a.X + Globals.TILESIZE) == x.Rectangle.X) && a.Y == x.Rectangle.Y)
+              || (((a.X + Globals.TILESIZE) == x.Rectangle.X) && ((a.Y + Globals.TILESIZE) == x.Rectangle.Y)) || ((a.X == x.Rectangle.X) && ((a.Y + Globals.TILESIZE) == x.Rectangle.Y)));
+            foreach (var item in tileHelp)
+            {
+                if (4 != (int)item.State)
+                {
+                    return true;
+                }
+            }
+
+
+            return false;
         }
         public List<Button> InitInGameMenu(Dictionary<string,Texture2D> Textures)
         {
@@ -199,6 +213,7 @@ namespace Settlers
                     bID++;
                 }
             }
+            this.Buildings.ForEach(x => x.Update());
                    
         }
 

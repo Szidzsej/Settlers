@@ -90,7 +90,6 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Builder.cs" />
     <Compile Include="Buildings\Building.cs" />
     <Compile Include="Buildings\BuildingType.cs" />
     <Compile Include="Buildings\BuildingTypeCreate.cs" />

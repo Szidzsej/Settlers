@@ -1,11 +1,3 @@
-Content\Buttons\exitNotP.xnb
-Content\Buttons\exitP.xnb
-Content\Buttons\startNotP.xnb
-Content\Buttons\startP.xnb
-Content\Tiles\grass.xnb
-Content\Tiles\stone.xnb
-Content\Tiles\tree.xnb
-Content\Tiles\buildingmenu.xnb
 Content\BuildingIcons\bakery.xnb
 Content\BuildingIcons\house.xnb
 Content\BuildingIcons\hunter.xnb
@@ -14,6 +6,14 @@ Content\BuildingIcons\well.xnb
 Content\BuildingIcons\wheatfarm.xnb
 Content\BuildingIcons\windmill.xnb
 Content\BuildingIcons\woodcutter.xnb
+Content\Buttons\exitNotP.xnb
+Content\Buttons\exitP.xnb
+Content\Buttons\startNotP.xnb
+Content\Buttons\startP.xnb
+Content\Tiles\grass.xnb
+Content\Tiles\stone.xnb
+Content\Tiles\tree.xnb
+Content\Tiles\buildingmenu.xnb
 Content\BuildingIcons\hower_bakery.xnb
 Content\BuildingIcons\hower_house.xnb
 Content\BuildingIcons\hower_hunter.xnb

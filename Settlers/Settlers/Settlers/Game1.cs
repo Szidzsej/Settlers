@@ -101,16 +101,15 @@ namespace Settlers
             else if (gs == GameState.Playing)
             {
                 this.map.Update(ms, prevMS, GameMenuButtons,Textures);
-                if (ks.IsKeyDown(Keys.W) /*&& !prevKs.IsKeyDown(Keys.W)*/)
+                if (ks.IsKeyDown(Keys.W))
                 {
                     map.MoveBuilding(Direction.Up,0);
-
                 }
-                if (ks.IsKeyDown(Keys.S) /*&& !prevKs.IsKeyDown(Keys.S)*/)
+                if (ks.IsKeyDown(Keys.S))
                     map.MoveBuilding(Direction.Down, 0);
-                if (ks.IsKeyDown(Keys.D) /*&& !prevKs.IsKeyDown(Keys.D)*/)
+                if (ks.IsKeyDown(Keys.D) )
                     map.MoveBuilding(Direction.Right, 0);
-                if (ks.IsKeyDown(Keys.A) /*&& !prevKs.IsKeyDown(Keys.A)*/)
+                if (ks.IsKeyDown(Keys.A))
                     map.MoveBuilding(Direction.Left, 0);
                 if (ks.IsKeyDown(Keys.R))
                     if (ks.IsKeyDown(Keys.Escape))
