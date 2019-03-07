@@ -26,7 +26,7 @@ namespace Settlers
         private KeyboardState ks = new KeyboardState();
         private KeyboardState prevKs = new KeyboardState();
         private GameState gs = new GameState();
-        private Dictionary<string, Building> Buildings = new Dictionary<string, Building>();
+        private List<Building> Buildings = new List<Building>();
         Map map;
 
         Button startButton;
@@ -86,7 +86,6 @@ namespace Settlers
                     this.map = new Map();
                     this.map.InitTiles(Textures["grass"], Textures["tree"], Textures["stone"],Textures["buildingmenu"]);
                     this.GameMenuButtons = this.map.InitInGameMenu(Textures);
-                    
                 }
                 if (exitButton.LeftClick(ms, prevMS))
                 {
@@ -102,19 +101,17 @@ namespace Settlers
             {
                 this.map.Update(ms, prevMS, GameMenuButtons,Textures);
                 if (ks.IsKeyDown(Keys.W))
-                {
-                    map.MoveBuilding(Direction.Up,0);
-                }
+                    map.MoveBuilding(Direction.Up,Buildings.Count());
                 if (ks.IsKeyDown(Keys.S))
-                    map.MoveBuilding(Direction.Down, 0);
+                    map.MoveBuilding(Direction.Down, Buildings.Count());
                 if (ks.IsKeyDown(Keys.D) )
-                    map.MoveBuilding(Direction.Right, 0);
+                    map.MoveBuilding(Direction.Right, Buildings.Count());
                 if (ks.IsKeyDown(Keys.A))
-                    map.MoveBuilding(Direction.Left, 0);
-                if (ks.IsKeyDown(Keys.R))
-                    if (ks.IsKeyDown(Keys.Escape))
-                    { gs = GameState.Pause; }
-
+                    map.MoveBuilding(Direction.Left, Buildings.Count());
+                if (ks.IsKeyDown(Keys.Enter))
+                {
+                    map.PlaceBuilding();
+                }
             }
             else if (gs == GameState.Pause)
             {

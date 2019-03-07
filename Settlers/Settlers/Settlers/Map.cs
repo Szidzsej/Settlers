@@ -133,7 +133,6 @@ namespace Settlers
         public void InitTiles(Texture2D grass, Texture2D tree, Texture2D stone,Texture2D buildingMenu)
         {
             var a = MapCreator();
-            
             for (int i = 0; i < 40; i++)
             {
                 for (int j = 0; j < 60; j++)
@@ -164,16 +163,37 @@ namespace Settlers
             }
             List<Tile> tileHelp = this.Tiles.FindAll(x => ((x.Rectangle.X == a.X) && (x.Rectangle.Y == a.Y)) || (((a.X + Globals.TILESIZE) == x.Rectangle.X) && a.Y == x.Rectangle.Y)
               || (((a.X + Globals.TILESIZE) == x.Rectangle.X) && ((a.Y + Globals.TILESIZE) == x.Rectangle.Y)) || ((a.X == x.Rectangle.X) && ((a.Y + Globals.TILESIZE) == x.Rectangle.Y)));
-            foreach (var item in tileHelp)
+            
+            if (tileHelp.FindAll(x=>x.State == TileState.Grass).Count()==4)
             {
-                if (4 != (int)item.State)
-                {
-                    return true;
-                }
+                return true;
             }
 
-
             return false;
+        }
+
+
+        public void PlaceBuilding()
+        {
+            int xCoorStart = 0;
+            int yCoorStart = 0;
+            foreach (var item in Buildings)
+            {
+                if (item.Status == BuildingStatus.Placing)
+                {
+                    item.Status = BuildingStatus.Construction;
+                    xCoorStart = item.Bounds.X;
+                    yCoorStart = item.Bounds.Y;
+                }
+            }
+            foreach (var item in Tiles)
+            {
+                if ((item.Rectangle.X == xCoorStart && item.Rectangle.Y == yCoorStart) || (item.Rectangle.X == (xCoorStart + Globals.TILESIZE) && item.Rectangle.Y == yCoorStart) ||
+                    (item.Rectangle.X == xCoorStart && item.Rectangle.Y == (yCoorStart+Globals.TILESIZE)) || (item.Rectangle.X == (xCoorStart + Globals.TILESIZE) && item.Rectangle.Y == (yCoorStart+Globals.TILESIZE)))
+                {
+                    item.State = TileState.Building;
+                }
+            }
         }
         public List<Button> InitInGameMenu(Dictionary<string,Texture2D> Textures)
         {
@@ -199,6 +219,7 @@ namespace Settlers
             }
             return BuildingButtons;
         }
+        
 
         public void Update(MouseState ms,MouseState prevMS, List<Button> GameMenuButtons, Dictionary<string,Texture2D> Textures)
         {
@@ -209,8 +230,9 @@ namespace Settlers
                 if (item.MouseOver(ms)) { item.ChangeState(2); } else { item.ChangeState(1); }
                 if (item.LeftClick(ms,prevMS))
                 {
-                    Buildings.Add(new Building(bID,new Rectangle(0, 0, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), Textures[s[1]],0,0));
+                    Buildings.Add(new Building(bID, new Rectangle(0, 0, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), Textures[s[1]], BuildingStatus.Placing, 0));
                     bID++;
+                    
                 }
             }
             this.Buildings.ForEach(x => x.Update());

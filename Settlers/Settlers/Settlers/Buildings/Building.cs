@@ -11,44 +11,46 @@ namespace Settlers
     {
         public int ID {get; set;}
         public int BuildingTypeID { get; set; }
-        public int Coordinate { get; set; }
         public Rectangle Rectangle { get; set; }
         public Texture2D Texture { get; set; }
         public Rectangle Bounds { get; set; }
+        public BuildingStatus Status { get; set; }
 
         public Rectangle NextStep { get; set; }
         public bool IsMoving { get; set; }
         public Vector2 Origin;
 
-        public Building(int id, Rectangle iRectangle, Texture2D ITexture, int bTID, int coor)
+        public Building(int id, Rectangle iRectangle, Texture2D ITexture,BuildingStatus iStatus, int bTID)
         {
+            this.Status = iStatus;
             this.Rectangle = iRectangle;
             this.Texture = ITexture;
             this.ID = id;
             this.BuildingTypeID = bTID;
-            this.Coordinate = coor;
-            this.Origin = new Vector2(ITexture.Width / 2, ITexture.Height / 2);
+            this.Origin = new Vector2(0, 0);
         }
-        public Building(int id,  int bTID, int coor)
+        public Building(int id,  int bTID)
         {
             this.ID = id;
             this.BuildingTypeID = bTID;
-            this.Coordinate = coor;
         }
-        public Building(Rectangle iRectangle, Texture2D ITexture, int bTID,int coor)
+        public Building(Rectangle iRectangle, Texture2D ITexture, BuildingStatus iStatus,  int bTID)
         {
+            this.Status = iStatus;
             this.Rectangle = iRectangle;
             this.Texture = ITexture;
             this.BuildingTypeID = bTID;
-            this.Coordinate = coor;
         }
         public void Draw(SpriteBatch sprite)
         {
             sprite.Draw(this.Texture, new Rectangle(this.Bounds.X, this.Bounds.Y, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), null, Color.White,0, this.Origin, SpriteEffects.None, 0f);
         }
+
+        
+
         public void Update()
         {
-            if (this.IsMoving)
+            if (this.IsMoving && this.Status == BuildingStatus.Placing)
             {
                 if (this.Bounds.X != this.NextStep.X || this.Bounds.Y != this.NextStep.Y )
                 {

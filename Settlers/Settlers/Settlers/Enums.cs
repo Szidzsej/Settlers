@@ -26,6 +26,11 @@ namespace Settlers
         Stone = 2,
         Menu = 3,
         Building = 4
-        
+    }
+    public enum BuildingStatus
+    {
+        Placing = 0,
+        Construction = 1,
+        Ready = 2
     }
 }

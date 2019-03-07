@@ -68,7 +68,7 @@ namespace Settlers
                 {
                     while (SQLiteDataReader.Read())
                     {
-                        temp.Add(new Building(SQLiteDataReader.GetInt32(SQLiteDataReader.GetOrdinal("ID")), SQLiteDataReader.GetInt32(SQLiteDataReader.GetOrdinal("EpuletTipusID")), SQLiteDataReader.GetInt32(SQLiteDataReader.GetOrdinal("Koordinata"))));
+                        temp.Add(new Building(SQLiteDataReader.GetInt32(SQLiteDataReader.GetOrdinal("ID")), SQLiteDataReader.GetInt32(SQLiteDataReader.GetOrdinal("EpuletTipusID"))));
                     }
                 }
             }
