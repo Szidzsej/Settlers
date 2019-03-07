@@ -173,27 +173,33 @@ namespace Settlers
         }
 
 
-        public void PlaceBuilding()
+        public void PlaceBuilding(int iID)
         {
             int xCoorStart = 0;
             int yCoorStart = 0;
             foreach (var item in Buildings)
             {
-                if (item.Status == BuildingStatus.Placing)
+                if (item.ID == iID)
                 {
                     item.Status = BuildingStatus.Construction;
                     xCoorStart = item.Bounds.X;
                     yCoorStart = item.Bounds.Y;
                 }
             }
+            List<Tile> tileHelp = new List<Tile>();
             foreach (var item in Tiles)
             {
                 if ((item.Rectangle.X == xCoorStart && item.Rectangle.Y == yCoorStart) || (item.Rectangle.X == (xCoorStart + Globals.TILESIZE) && item.Rectangle.Y == yCoorStart) ||
-                    (item.Rectangle.X == xCoorStart && item.Rectangle.Y == (yCoorStart+Globals.TILESIZE)) || (item.Rectangle.X == (xCoorStart + Globals.TILESIZE) && item.Rectangle.Y == (yCoorStart+Globals.TILESIZE)))
+                    (item.Rectangle.X == xCoorStart && item.Rectangle.Y == (yCoorStart + Globals.TILESIZE)) || (item.Rectangle.X == (xCoorStart + Globals.TILESIZE) && item.Rectangle.Y == (yCoorStart + Globals.TILESIZE)))
                 {
-                    item.State = TileState.Building;
+                    tileHelp.Add(item);
                 }
             }
+            foreach (var item in tileHelp)
+            {
+                item.State = TileState.Building;
+            }
+
         }
         public List<Button> InitInGameMenu(Dictionary<string,Texture2D> Textures)
         {

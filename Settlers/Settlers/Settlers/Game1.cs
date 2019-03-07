@@ -99,19 +99,32 @@ namespace Settlers
             }
             else if (gs == GameState.Playing)
             {
-                this.map.Update(ms, prevMS, GameMenuButtons,Textures);
-                if (ks.IsKeyDown(Keys.W))
-                    map.MoveBuilding(Direction.Up,Buildings.Count());
-                if (ks.IsKeyDown(Keys.S))
-                    map.MoveBuilding(Direction.Down, Buildings.Count());
-                if (ks.IsKeyDown(Keys.D) )
-                    map.MoveBuilding(Direction.Right, Buildings.Count());
-                if (ks.IsKeyDown(Keys.A))
-                    map.MoveBuilding(Direction.Left, Buildings.Count());
-                if (ks.IsKeyDown(Keys.Enter))
+                int iID = 0;
+                this.map.Update(ms, prevMS, GameMenuButtons, Textures);
+                if (this.map.Buildings.Count() != 0)
                 {
-                    map.PlaceBuilding();
+                    foreach (var item in this.map.Buildings)
+                    {
+                        if (item.Status == BuildingStatus.Placing)
+                        {
+
+                            iID = map.Buildings.First(x => x.Status == BuildingStatus.Placing).ID;
+                        }
+                    }
+                    if (ks.IsKeyDown(Keys.W))
+                        map.MoveBuilding(Direction.Up, iID);
+                    if (ks.IsKeyDown(Keys.S))
+                        map.MoveBuilding(Direction.Down, iID);
+                    if (ks.IsKeyDown(Keys.D))
+                        map.MoveBuilding(Direction.Right, iID);
+                    if (ks.IsKeyDown(Keys.A))
+                        map.MoveBuilding(Direction.Left, iID);
+                    if (ks.IsKeyDown(Keys.Enter))
+                    {
+                        map.PlaceBuilding(iID);
+                    }
                 }
+                
             }
             else if (gs == GameState.Pause)
             {
