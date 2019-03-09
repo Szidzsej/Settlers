@@ -213,11 +213,12 @@ namespace Settlers
                     s = item.Key.Substring(6);
                     if (countHelper % 2 == 1)
                     {
-                        BuildingButtons.Add(new Button((xMapEnd + (Globals.MENUICON + 80)), yHelper, Globals.MENUICON, Globals.MENUICON,Textures[s], item.Value));
+                        
+                        BuildingButtons.Add(new Button((xMapEnd + (Globals.MENUICON + 80)), yHelper, Globals.MENUICON, Globals.MENUICON,Textures[s], item.Value, GetGameMenuBuildingType(s)));
                     }
                     else
                     {
-                        BuildingButtons.Add(new Button(xMapEnd + 30, yHelper, Globals.MENUICON, Globals.MENUICON, Textures[s], item.Value));
+                        BuildingButtons.Add(new Button(xMapEnd + 30, yHelper, Globals.MENUICON, Globals.MENUICON, Textures[s], item.Value, GetGameMenuBuildingType(s)));
                         yHelper += 90;
                     }
                 }   
@@ -225,7 +226,23 @@ namespace Settlers
             }
             return BuildingButtons;
         }
-        
+        private BuildingTypeEnum GetGameMenuBuildingType(string s)
+        {
+            BuildingTypeEnum type;
+            switch (s)
+            {
+                case "bakery" : type = BuildingTypeEnum.Bakery;  break;
+                case "house": type = BuildingTypeEnum.House; break;
+                case "hunter": type = BuildingTypeEnum.Hunter; break;
+                case "stonequarry": type = BuildingTypeEnum.Stonequarry; break;
+                case "wheatfarm": type = BuildingTypeEnum.Wheatfarm; break;
+                case "well": type = BuildingTypeEnum.Well; break;
+                case "woodcutter": type = BuildingTypeEnum.Woodcutter; break;
+                case "windmill": type = BuildingTypeEnum.Windmill; break;
+                    default : type = BuildingTypeEnum.House; break;
+            }
+            return type;
+        }
 
         public void Update(MouseState ms,MouseState prevMS, List<Button> GameMenuButtons, Dictionary<string,Texture2D> Textures)
         {
@@ -236,7 +253,7 @@ namespace Settlers
                 if (item.MouseOver(ms)) { item.ChangeState(2); } else { item.ChangeState(1); }
                 if (item.LeftClick(ms,prevMS))
                 {
-                    Buildings.Add(new Building(bID, new Rectangle(0, 0, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), Textures[s[1]], BuildingStatus.Placing, 0));
+                    Buildings.Add(new Building(bID, new Rectangle(0, 0, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), Textures[s[1]], BuildingStatus.Placing, item.buildingType));
                     bID++;
                     
                 }

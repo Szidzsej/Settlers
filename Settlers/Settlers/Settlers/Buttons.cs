@@ -16,6 +16,7 @@ namespace Settlers
         private int w, h;                   // Szélesség, magasság
         private Vector2 pos;                // Pozíció
 
+        public BuildingTypeEnum buildingType { get; set; }
         public float X { get { return pos.X; } set { pos.X = value; } }
         public float Y { get { return pos.Y; } set { pos.Y = value; } }
         public int W { get { return w; } set { w = value; } }
@@ -39,6 +40,16 @@ namespace Settlers
             this.texture_state2 = state2;
         }
 
+        public Button(int x, int y, int w, int h, Texture2D state1, Texture2D state2, BuildingTypeEnum bType)
+        {
+            this.pos = new Vector2(x, y);
+            this.texture = state1;
+            this.w = w;
+            this.h = h;
+            this.texture_state1 = state1;
+            this.texture_state2 = state2;
+            this.buildingType = bType;
+        }
         public Button(int x, int y, int w, int h, Texture2D state1, Texture2D state2)
         {
             this.pos = new Vector2(x, y);

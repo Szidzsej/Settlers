@@ -10,37 +10,39 @@ namespace Settlers
     public class Building
     {
         public int ID {get; set;}
-        public int BuildingTypeID { get; set; }
+        public BuildingTypeEnum BuildingType { get; set; }
         public Rectangle Rectangle { get; set; }
         public Texture2D Texture { get; set; }
         public Rectangle Bounds { get; set; }
         public BuildingStatus Status { get; set; }
+        public int bTID { get; set; }
 
         public Rectangle NextStep { get; set; }
         public bool IsMoving { get; set; }
         public Vector2 Origin;
 
-        public Building(int id, Rectangle iRectangle, Texture2D ITexture,BuildingStatus iStatus, int bTID)
+        public Building(int id, Rectangle iRectangle, Texture2D ITexture,BuildingStatus iStatus, BuildingTypeEnum bTID)
         {
             this.Status = iStatus;
             this.Rectangle = iRectangle;
             this.Texture = ITexture;
             this.ID = id;
-            this.BuildingTypeID = bTID;
+            this.BuildingType = bTID;
             this.Origin = new Vector2(0, 0);
         }
-        public Building(int id,  int bTID)
+        public Building(int id, int bTID)
         {
             this.ID = id;
-            this.BuildingTypeID = bTID;
+            this.bTID = bTID;
         }
-        public Building(Rectangle iRectangle, Texture2D ITexture, BuildingStatus iStatus,  int bTID)
+        public Building(Rectangle iRectangle, Texture2D ITexture, BuildingStatus iStatus, BuildingTypeEnum bTID)
         {
             this.Status = iStatus;
             this.Rectangle = iRectangle;
             this.Texture = ITexture;
-            this.BuildingTypeID = bTID;
+            this.BuildingType = bTID;
         }
+
         public void Draw(SpriteBatch sprite)
         {
             sprite.Draw(this.Texture, new Rectangle(this.Bounds.X, this.Bounds.Y, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), null, Color.White,0, this.Origin, SpriteEffects.None, 0f);

@@ -33,4 +33,15 @@ namespace Settlers
         Construction = 1,
         Ready = 2
     }
+    public enum BuildingTypeEnum
+    {
+        House = 0,
+        Woodcutter = 1,
+        Stonequarry = 2,
+        Wheatfarm = 3,
+        Windmill = 4,
+        Bakery = 5,
+        Hunter = 6,
+        Well = 7
+    }
 }
