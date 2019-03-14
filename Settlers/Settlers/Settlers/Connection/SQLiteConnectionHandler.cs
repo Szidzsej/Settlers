@@ -10,9 +10,9 @@ namespace Settlers
     {
         SQLiteConnection connection;
 
-        public SQLiteConnectionHandler(string iPath)
+        public SQLiteConnectionHandler()
         {
-            string connectionString = $"Data Source={iPath};Version=3;";
+            string connectionString = $"Datasource=127.0.0.1;Port=3306;Database=settlers;Username=root;Password=;CharSet=utf8;";
 
             connection = new SQLiteConnection(connectionString);
         }
@@ -75,16 +75,16 @@ namespace Settlers
             return temp;
         }
 
-        public List<BuildingType> GetBuildingType()
+        public BuildingType GetBuildingType()
         {
-            List<BuildingType> temp = new List<BuildingType>();
+            BuildingType temp = null;
             using (SQLiteCommand command = new SQLiteCommand("Select ID,Nev,TipusID From Epulet", connection))
             {
                 using (SQLiteDataReader SQLiteDataReader = command.ExecuteReader())
                 {
                     while (SQLiteDataReader.Read())
                     {
-                        temp.Add(new Settlers.BuildingType(SQLiteDataReader.GetInt32(SQLiteDataReader.GetOrdinal("ID")), SQLiteDataReader.GetString(SQLiteDataReader.GetOrdinal("Nev")), SQLiteDataReader.GetInt32(SQLiteDataReader.GetOrdinal("TipusID"))));
+                        temp = (new Settlers.BuildingType(SQLiteDataReader.GetInt32(SQLiteDataReader.GetOrdinal("ID")), SQLiteDataReader.GetString(SQLiteDataReader.GetOrdinal("Nev")), SQLiteDataReader.GetInt32(SQLiteDataReader.GetOrdinal("TipusID"))));
                     }
                 }
             }

@@ -20,7 +20,7 @@ namespace Settlers
         /// <returns></returns>
         bool TryOpen();
         List<BaseMaterial> GetBaseMaterial();
-        List<BuildingType> GetBuildingType();
+        BuildingType GetBuildingType();
         List<BuildingTypeCreate> GetBuildingTypeCreate();
         List<Building> GetBuilding();
         void InsertBuilding();

@@ -26,7 +26,7 @@ namespace Settlers
         private KeyboardState ks = new KeyboardState();
         private KeyboardState prevKs = new KeyboardState();
         private GameState gs = new GameState();
-        private List<Building> Buildings = new List<Building>();
+        private List<Building> buildings = new List<Building>();
         Map map;
 
         Button startButton;
@@ -45,7 +45,7 @@ namespace Settlers
             gs = GameState.Menu;
             base.Initialize();
         }
-        
+
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -53,25 +53,15 @@ namespace Settlers
 
             startButton = new Button(100, 70, 200, 100, Textures["startNotP"], Textures["startP"]);
             exitButton = new Button(100, 340, 200, 100, Textures["exitNotP"], Textures["exitP"]);
-            if (gs== GameState.Playing)
-            {
-                
-            }
-            
         }
 
         protected override void UnloadContent()
         {
 
         }
-        
+
         protected override void Update(GameTime gameTime)
         {
-
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
-
-
             prevMS = ms;
             ms = Mouse.GetState();
 
@@ -84,7 +74,7 @@ namespace Settlers
                     gs = GameState.Playing;
 
                     this.map = new Map();
-                    this.map.InitTiles(Textures["grass"], Textures["tree"], Textures["stone"],Textures["buildingmenu"]);
+                    this.map.InitTiles(Textures["grass"], Textures["tree"], Textures["stone"], Textures["buildingmenu"]);
                     this.GameMenuButtons = this.map.InitInGameMenu(Textures);
                 }
                 if (exitButton.LeftClick(ms, prevMS))
@@ -99,41 +89,52 @@ namespace Settlers
             }
             else if (gs == GameState.Playing)
             {
-                int iID = 0;
-                this.map.Update(ms, prevMS, GameMenuButtons, Textures);
-                if (this.map.Buildings.Count() != 0)
-                {
-                    foreach (var item in this.map.Buildings)
-                    {
-                        if (item.Status == BuildingStatus.Placing)
-                        {
+                string[] s = null;
 
-                            iID = map.Buildings.First(x => x.Status == BuildingStatus.Placing).ID;
-                        }
-                    }
-                    if (ks.IsKeyDown(Keys.W))
-                        map.MoveBuilding(Direction.Up, iID);
-                    if (ks.IsKeyDown(Keys.S))
-                        map.MoveBuilding(Direction.Down, iID);
-                    if (ks.IsKeyDown(Keys.D))
-                        map.MoveBuilding(Direction.Right, iID);
-                    if (ks.IsKeyDown(Keys.A))
-                        map.MoveBuilding(Direction.Left, iID);
-                    if (ks.IsKeyDown(Keys.Enter))
+                foreach (var item in GameMenuButtons)
+                {
+                    s = Textures.FirstOrDefault(x => x.Value == item.Texture).Key.Split('_');
+                    if (item.MouseOver(ms)) { item.ChangeState(2); } else { item.ChangeState(1); }
+                    if (item.LeftClick(ms, prevMS))
                     {
-                        map.PlaceBuilding(iID);
+                        buildings.Add(new Building((buildings == null || buildings.Count == 0) ? 1 : buildings.Max(x => x.ID) + 1, new Rectangle(0, 0, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), Textures[s[1]], BuildingStatus.Placing, item.buildingType));
                     }
                 }
-                
+                //int iID = 0;
+                this.map.Update(ms, prevMS, GameMenuButtons, Textures);
+                if (this.buildings.Count() != 0)
+                {
+                    this.buildings.ForEach(x => x.Update());
+
+                    var asd = buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing);
+                    if (asd != null)
+                    {
+                        if (ks.IsKeyDown(Keys.W) && map.CheckTile(Direction.Up, asd.Step(Direction.Up)))
+                            asd.MoveBuilding(Direction.Up);
+                        if (ks.IsKeyDown(Keys.S) && map.CheckTile(Direction.Down, asd.Step(Direction.Down)))
+                            asd.MoveBuilding(Direction.Down);
+                        if (ks.IsKeyDown(Keys.D) && map.CheckTile(Direction.Right, asd.Step(Direction.Right)))
+                            asd.MoveBuilding(Direction.Right);
+                        if (ks.IsKeyDown(Keys.A) && map.CheckTile(Direction.Left, asd.Step(Direction.Left)))
+                            asd.MoveBuilding(Direction.Left);
+                        if (ks.IsKeyDown(Keys.Enter))
+                        {
+                            map.PlaceBuilding(asd.Bounds);
+                            asd.Status = BuildingStatus.Construction;
+                        }
+                    }
+
+                }
+
             }
             else if (gs == GameState.Pause)
             {
-                
+
             }
 
             base.Update(gameTime);
         }
-        
+
         protected override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
@@ -146,6 +147,11 @@ namespace Settlers
             else if (gs == GameState.Playing)
             {
                 map.Draw(spriteBatch);
+
+                this.buildings.ForEach(x =>
+                {
+                    x.Draw(spriteBatch);
+                });
             }
             if (gs == GameState.Pause)
             {

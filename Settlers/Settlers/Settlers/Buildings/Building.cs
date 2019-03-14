@@ -9,7 +9,7 @@ namespace Settlers
 {
     public class Building
     {
-        public int ID {get; set;}
+        public int ID { get; set; }
         public BuildingTypeEnum BuildingType { get; set; }
         public Rectangle Rectangle { get; set; }
         public Texture2D Texture { get; set; }
@@ -21,7 +21,7 @@ namespace Settlers
         public bool IsMoving { get; set; }
         public Vector2 Origin;
 
-        public Building(int id, Rectangle iRectangle, Texture2D ITexture,BuildingStatus iStatus, BuildingTypeEnum bTID)
+        public Building(int id, Rectangle iRectangle, Texture2D ITexture, BuildingStatus iStatus, BuildingTypeEnum bTID)
         {
             this.Status = iStatus;
             this.Rectangle = iRectangle;
@@ -45,16 +45,16 @@ namespace Settlers
 
         public void Draw(SpriteBatch sprite)
         {
-            sprite.Draw(this.Texture, new Rectangle(this.Bounds.X, this.Bounds.Y, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), null, Color.White,0, this.Origin, SpriteEffects.None, 0f);
+            sprite.Draw(this.Texture, new Rectangle(this.Bounds.X, this.Bounds.Y, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), null, Color.White, 0, this.Origin, SpriteEffects.None, 0f);
         }
 
-        
+
 
         public void Update()
         {
             if (this.IsMoving && this.Status == BuildingStatus.Placing)
             {
-                if (this.Bounds.X != this.NextStep.X || this.Bounds.Y != this.NextStep.Y )
+                if (this.Bounds.X != this.NextStep.X || this.Bounds.Y != this.NextStep.Y)
                 {
                     if (this.Bounds.X != this.NextStep.X)
                     {
@@ -99,6 +99,10 @@ namespace Settlers
             }
             var a = Step(iDirection);
         }
+        public void MoveBuilding(Direction iDirection)
+        {
+            AnimatedUpdate(iDirection);
+        }
 
         public Rectangle Step(Direction iDirection)
         {
@@ -126,6 +130,6 @@ namespace Settlers
                     return Rectangle.Empty;
             }
         }
-        
+
     }
 }
