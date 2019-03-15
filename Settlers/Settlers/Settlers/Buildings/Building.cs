@@ -15,7 +15,6 @@ namespace Settlers
         public Texture2D Texture { get; set; }
         public Rectangle Bounds { get; set; }
         public BuildingStatus Status { get; set; }
-        public int bTID { get; set; }
 
         public Rectangle NextStep { get; set; }
         public bool IsMoving { get; set; }
@@ -30,10 +29,12 @@ namespace Settlers
             this.BuildingType = bTID;
             this.Origin = new Vector2(0, 0);
         }
-        public Building(int id, int bTID)
+        public Building(int id, BuildingTypeEnum bTID, Rectangle iRectangle, BuildingStatus iStatus)
         {
             this.ID = id;
-            this.bTID = bTID;
+            this.BuildingType = bTID;
+            this.Rectangle = iRectangle;
+            this.Status = iStatus;
         }
         public Building(Rectangle iRectangle, Texture2D ITexture, BuildingStatus iStatus, BuildingTypeEnum bTID)
         {
@@ -131,5 +132,23 @@ namespace Settlers
             }
         }
 
+        public string GetTextureName(BuildingTypeEnum bTID)
+        {
+            string s = "";
+            switch (bTID)
+            {
+                case BuildingTypeEnum.Bakery: s=  "bakery"; break;
+                case BuildingTypeEnum.House:  s = "house"; break;
+                case BuildingTypeEnum.Hunter: s = "hunter" ; break;
+                case BuildingTypeEnum.Stonequarry: s = "stonequarry" ; break;
+                case BuildingTypeEnum.Wheatfarm: s = "wheatfarm"  ; break;
+                case BuildingTypeEnum.Well: s = "well"  ; break;
+                case BuildingTypeEnum.Woodcutter: s = "woodcutter"  ; break;
+                case BuildingTypeEnum.Windmill: s = "windmill" ; break;
+                default: s = "house"; break;
+            }
+            return s;
+        }
+        
     }
 }

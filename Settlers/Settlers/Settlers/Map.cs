@@ -13,8 +13,6 @@ namespace Settlers
     {
         public List<Tile> Tiles { get; set; }
         public List<Button> BuildingButtons;
-        //public List<Building> Buildings;
-        int bID = 0;
         #region Koordináta segéd változók
         Random random = new Random();
         int yCoor = 0;
@@ -34,7 +32,6 @@ namespace Settlers
         {
             this.Tiles = new List<Tile>();
             this.BuildingButtons = new List<Button>();
-            //this.Buildings = new List<Building>();
 
         }
         private int[,] MapCreator()
@@ -146,12 +143,6 @@ namespace Settlers
             Tiles.Add(new Tile(new Rectangle(xMapEnd + Globals.TILESIZE, 0, 200, 600), buildingMenu, TileState.Menu));
 
         }
-        //public void MoveBuilding(Direction iDirection, int iID)
-        //{
-        //    var a = Buildings.FirstOrDefault(x => x.ID == iID);
-        //    if (CheckTile(iDirection, iID))
-        //        a.AnimatedUpdate(iDirection);
-        //}
 
         public bool CheckTile(Direction iDirection, Rectangle a)
         {
@@ -236,19 +227,6 @@ namespace Settlers
 
         public void Update(MouseState ms,MouseState prevMS, List<Button> GameMenuButtons, Dictionary<string,Texture2D> Textures)
         {
-            //string[] s = null;
-            //foreach (var item in GameMenuButtons)
-            //{
-            //    s = Textures.FirstOrDefault(x => x.Value == item.Texture).Key.Split('_');
-            //    if (item.MouseOver(ms)) { item.ChangeState(2); } else { item.ChangeState(1); }
-            //    if (item.LeftClick(ms,prevMS))
-            //    {
-            //        Buildings.Add(new Building(bID, new Rectangle(0, 0, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), Textures[s[1]], BuildingStatus.Placing, item.buildingType));
-            //        bID++;
-                    
-            //    }
-            //}
-            //this.Buildings.ForEach(x => x.Update());
                    
         }
 
@@ -262,10 +240,6 @@ namespace Settlers
             {
                 x.Draw(sprite);
             });
-            //this.Buildings.ForEach(x =>
-            //{
-            //    x.Draw(sprite);
-            //});
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -12,9 +13,6 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Settlers
 {
-    /// <summary>
-    /// This is the main type for your game
-    /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         private GraphicsDeviceManager graphics;
@@ -28,11 +26,22 @@ namespace Settlers
         private GameState gs = new GameState();
         private List<Building> buildings = new List<Building>();
         Map map;
-
+        private MySqlConnectionHandler connector;
+        #region Menu gombok
         Button startButton;
         Button exitButton;
+        Button loadButton;
+        #endregion
+
+        #region Szünet gombok
+        Button continueButton;
+        Button saveButton;
+        #endregion
+
         public Game1()
         {
+            connector = new MySqlConnectionHandler();
+            connector.TryOpen();
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 1100;
@@ -53,6 +62,9 @@ namespace Settlers
 
             startButton = new Button(100, 70, 200, 100, Textures["startNotP"], Textures["startP"]);
             exitButton = new Button(100, 340, 200, 100, Textures["exitNotP"], Textures["exitP"]);
+            loadButton = new Button(100, 210, 200, 100, Textures["betoltesNotP"], Textures["betoltesP"]);
+            continueButton = new Button(100, 70, 200, 100, Textures["folytatasNotP"], Textures["folytatasP"]);
+            saveButton = new Button(100, 210, 200, 100, Textures["mentesNotP"], Textures["mentesP"]);
         }
 
         protected override void UnloadContent()
@@ -82,9 +94,25 @@ namespace Settlers
                     gs = GameState.Exit;
                     Exit();
                 }
+                if (loadButton.LeftClick(ms,prevMS))
+                {
+                    buildings = connector.GetBuilding();
+                    string s = "";
+                    foreach (var item in buildings)
+                    {
+                        s = item.GetTextureName(item.BuildingType);
+                        item.Bounds = item.Rectangle;
+                        item.Texture = Textures[s];
+                    }
+                    gs = GameState.Playing;
+
+                    this.map = new Map();
+                    this.map.InitTiles(Textures["grass"], Textures["tree"], Textures["stone"], Textures["buildingmenu"]);
+                    this.GameMenuButtons = this.map.InitInGameMenu(Textures);
+                }
                 if (startButton.MouseOver(ms)) { startButton.ChangeState(2); } else { startButton.ChangeState(1); }
                 if (exitButton.MouseOver(ms)) { exitButton.ChangeState(2); } else { exitButton.ChangeState(1); }
-
+                if (loadButton.MouseOver(ms)) { loadButton.ChangeState(2); } else { loadButton.ChangeState(1); }
 
             }
             else if (gs == GameState.Playing)
@@ -100,7 +128,6 @@ namespace Settlers
                         buildings.Add(new Building((buildings == null || buildings.Count == 0) ? 1 : buildings.Max(x => x.ID) + 1, new Rectangle(0, 0, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), Textures[s[1]], BuildingStatus.Placing, item.buildingType));
                     }
                 }
-                //int iID = 0;
                 this.map.Update(ms, prevMS, GameMenuButtons, Textures);
                 if (this.buildings.Count() != 0)
                 {
@@ -126,10 +153,28 @@ namespace Settlers
 
                 }
 
+                if (ks.IsKeyDown(Keys.Escape))
+                    gs = GameState.Pause;
+
             }
             else if (gs == GameState.Pause)
             {
-
+                if (continueButton.LeftClick(ms,prevMS))
+                {
+                    gs = GameState.Playing;
+                }
+                if (exitButton.LeftClick(ms, prevMS))
+                {
+                    gs = GameState.Exit;
+                    Exit();
+                }
+                if(saveButton.LeftClick(ms,prevMS))
+                {
+                    connector.InsertBuilding(buildings);
+                }
+                if (continueButton.MouseOver(ms)) { continueButton.ChangeState(2); } else { continueButton.ChangeState(1); }
+                if (saveButton.MouseOver(ms)) { saveButton.ChangeState(2); } else { saveButton.ChangeState(1); }
+                if (exitButton.MouseOver(ms)) { exitButton.ChangeState(2); } else { exitButton.ChangeState(1); }
             }
 
             base.Update(gameTime);
@@ -143,6 +188,7 @@ namespace Settlers
             {
                 startButton.Draw(spriteBatch);
                 exitButton.Draw(spriteBatch);
+                loadButton.Draw(spriteBatch);
             }
             else if (gs == GameState.Playing)
             {
@@ -155,7 +201,8 @@ namespace Settlers
             }
             if (gs == GameState.Pause)
             {
-                startButton.Draw(spriteBatch);
+                continueButton.Draw(spriteBatch);
+                saveButton.Draw(spriteBatch);
                 exitButton.Draw(spriteBatch);
             }
 
