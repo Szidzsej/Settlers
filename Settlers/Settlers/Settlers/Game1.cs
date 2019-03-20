@@ -25,6 +25,9 @@ namespace Settlers
         private KeyboardState prevKs = new KeyboardState();
         private GameState gs = new GameState();
         private List<Building> buildings = new List<Building>();
+        private Dictionary<string, SpriteFont> fonts = new Dictionary<string, SpriteFont>();
+        private List<Output> outputs = new List<Output>();
+
         Map map;
         private MySqlConnectionHandler connector;
         #region Menu gombok
@@ -58,8 +61,9 @@ namespace Settlers
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            Directory.GetFiles("Content", "*.xnb", SearchOption.AllDirectories).ToList().ForEach(x => Textures.Add(Path.GetFileNameWithoutExtension(x), Content.Load<Texture2D>(Path.Combine(Path.GetDirectoryName(x).Substring(8), Path.GetFileNameWithoutExtension(x)))));
 
+            Directory.GetFiles("Content/Textures", "*.xnb", SearchOption.AllDirectories).ToList().ForEach(x => Textures.Add(Path.GetFileNameWithoutExtension(x), Content.Load<Texture2D>(Path.Combine(Path.GetDirectoryName(x).Substring(8), Path.GetFileNameWithoutExtension(x)))));
+            Directory.GetFiles("Content/Fonts","*.xnb",SearchOption.AllDirectories).ToList().ForEach(x=>fonts.Add(Path.GetFileNameWithoutExtension(x),Content.Load<SpriteFont>(Path.Combine(Path.GetDirectoryName(x).Substring(8), Path.GetFileNameWithoutExtension(x)))));
             startButton = new Button(100, 70, 200, 100, Textures["startNotP"], Textures["startP"]);
             exitButton = new Button(100, 340, 200, 100, Textures["exitNotP"], Textures["exitP"]);
             loadButton = new Button(100, 210, 200, 100, Textures["betoltesNotP"], Textures["betoltesP"]);
@@ -193,11 +197,15 @@ namespace Settlers
             else if (gs == GameState.Playing)
             {
                 map.Draw(spriteBatch);
-
                 this.buildings.ForEach(x =>
                 {
                     x.Draw(spriteBatch);
                 });
+                this.outputs.ForEach(x =>
+                {
+                    x.Draw(spriteBatch);
+                });
+                
             }
             if (gs == GameState.Pause)
             {

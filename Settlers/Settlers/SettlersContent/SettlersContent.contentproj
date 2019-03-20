@@ -46,166 +46,168 @@
       <HintPath>..\..\packages\System.Data.SQLite.Linq.1.0.109.0\lib\net40\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Compile Include="BuildingIcons\bakery.png">
+    <Compile Include="Textures\BuildingIcons\bakery.png">
       <Name>bakery</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="BuildingIcons\house.png">
+    <Compile Include="Textures\BuildingIcons\house.png">
       <Name>house</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="BuildingIcons\hunter.png">
+    <Compile Include="Textures\BuildingIcons\hower_bakery.png">
+      <Name>hower_bakery</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\BuildingIcons\hower_house.png">
+      <Name>hower_house</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\BuildingIcons\hower_hunter.png">
+      <Name>hower_hunter</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\BuildingIcons\hower_stonequarry.png">
+      <Name>hower_stonequarry</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\BuildingIcons\hower_well.png">
+      <Name>hower_well</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\BuildingIcons\hower_wheatfarm.png">
+      <Name>hower_wheatfarm</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\BuildingIcons\hower_windmill.png">
+      <Name>hower_windmill</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\BuildingIcons\hower_woodcutter.png">
+      <Name>hower_woodcutter</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\BuildingIcons\hunter.png">
       <Name>hunter</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="BuildingIcons\stonequarry.png">
+    <Compile Include="Textures\BuildingIcons\stonequarry.png">
       <Name>stonequarry</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="BuildingIcons\well.png">
+    <Compile Include="Textures\BuildingIcons\well.png">
       <Name>well</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="BuildingIcons\wheatfarm.png">
+    <Compile Include="Textures\BuildingIcons\wheatfarm.png">
       <Name>wheatfarm</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="BuildingIcons\windmill.png">
+    <Compile Include="Textures\BuildingIcons\windmill.png">
       <Name>windmill</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="BuildingIcons\woodcutter.png">
+    <Compile Include="Textures\BuildingIcons\woodcutter.png">
       <Name>woodcutter</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Buttons\exitNotP.png">
+    <Compile Include="Textures\Buttons\betoltesNotP.png">
+      <Name>betoltesNotP</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Buttons\betoltesP.png">
+      <Name>betoltesP</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Buttons\exitNotP.png">
       <Name>exitNotP</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Buttons\exitP.png">
+    <Compile Include="Textures\Buttons\exitP.png">
       <Name>exitP</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Buttons\startNotP.png">
+    <Compile Include="Textures\Buttons\folytatasNotP.png">
+      <Name>folytatasNotP</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Buttons\folytatasP.png">
+      <Name>folytatasP</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Buttons\mentesNotP.png">
+      <Name>mentesNotP</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Buttons\mentesP.png">
+      <Name>mentesP</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Buttons\startNotP.png">
       <Name>startNotP</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Buttons\startP.png">
+    <Compile Include="Textures\Buttons\startP.png">
       <Name>startP</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Tiles\grass.png">
+    <Compile Include="Textures\Tiles\buildingmenu.png">
+      <Name>buildingmenu</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Tiles\grass.png">
       <Name>grass</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Tiles\stone.png">
+    <Compile Include="Textures\Tiles\stone.png">
       <Name>stone</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Tiles\tree.png">
+    <Compile Include="Textures\Tiles\tree.png">
       <Name>tree</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Tiles\buildingmenu.png">
-      <Name>buildingmenu</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="BuildingIcons\hower_bakery.png">
-      <Name>hower_bakery</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="BuildingIcons\hower_house.png">
-      <Name>hower_house</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="BuildingIcons\hower_hunter.png">
-      <Name>hower_hunter</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="BuildingIcons\hower_stonequarry.png">
-      <Name>hower_stonequarry</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="BuildingIcons\hower_well.png">
-      <Name>hower_well</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="BuildingIcons\hower_wheatfarm.png">
-      <Name>hower_wheatfarm</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="BuildingIcons\hower_windmill.png">
-      <Name>hower_windmill</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="BuildingIcons\hower_woodcutter.png">
-      <Name>hower_woodcutter</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Buttons\betoltesNotP.png">
-      <Name>betoltesNotP</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Buttons\betoltesP.png">
-      <Name>betoltesP</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Buttons\folytatasNotP.png">
-      <Name>folytatasNotP</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Buttons\folytatasP.png">
-      <Name>folytatasP</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Buttons\mentesNotP.png">
-      <Name>mentesNotP</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Buttons\mentesP.png">
-      <Name>mentesP</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
+    <Compile Include="Fonts\MyFont.spritefont">
+      <Name>MyFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

@@ -1,0 +1,33 @@
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Settlers
+{
+    class Output
+    {
+        public string Name { get; set; }
+        public string Text { get; set; }
+        public Vector2 Position { get; set; }
+        public Vector2 Origin { get; set; }
+        public Color Color { get; set; }
+        public SpriteFont FontStyle { get; set; }
+
+        public Output(string iName, string iText,  Vector2 iPosition, Color iColor, SpriteFont iFontStyle)
+        {
+            this.Name = iName;
+            this.Text = iText;
+            this.Position = iPosition;
+            this.Color = iColor;
+            this.FontStyle = iFontStyle;
+            this.Origin = FontStyle.MeasureString(Text) / 2;
+        }
+        public void Draw(SpriteBatch sprite)
+        {
+            sprite.DrawString(this.FontStyle, Text, Position, Color,0, Origin, 1.0f, SpriteEffects.None, 0.5f);
+        }
+    }
+}
