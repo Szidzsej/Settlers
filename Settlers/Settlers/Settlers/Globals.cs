@@ -12,5 +12,6 @@ namespace Settlers
         public static int MENUICON = 60;
         public static int TILEROWCOUNT=40;
         public static int TILECOLUMNCOUNT = 60;
+        public static int STARTWORKERS = 5;
     }
 }

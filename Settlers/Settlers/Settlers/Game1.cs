@@ -27,6 +27,9 @@ namespace Settlers
         private List<Building> buildings = new List<Building>();
         private Dictionary<string, SpriteFont> fonts = new Dictionary<string, SpriteFont>();
         private List<Output> outputs = new List<Output>();
+        private int workers = Globals.STARTWORKERS;
+        Dictionary<BaseMaterial, int> basematerials = new Dictionary<BaseMaterial, int>();
+        private int yOutput = 410;
 
         Map map;
         private MySqlConnectionHandler connector;
@@ -69,6 +72,14 @@ namespace Settlers
             loadButton = new Button(100, 210, 200, 100, Textures["betoltesNotP"], Textures["betoltesP"]);
             continueButton = new Button(100, 70, 200, 100, Textures["folytatasNotP"], Textures["folytatasP"]);
             saveButton = new Button(100, 210, 200, 100, Textures["mentesNotP"], Textures["mentesP"]);
+
+            outputs.Add(new Output("worker", $"Workers: {workers - (buildings.Count(x=> x.HasWorker == true))}/{workers}", new Vector2(910, yOutput), Color.Black, fonts["MyFont"]));
+            basematerials = this.connector.GetBaseMaterial();
+            foreach (var item in basematerials)
+            {
+                yOutput += 20;
+                outputs.Add(new Output(item.Key.Name,$"{item.Key.Name}: {item.Value}",new Vector2(910, yOutput),Color.Black,fonts["MyFont"]));
+            }
         }
 
         protected override void UnloadContent()
@@ -122,6 +133,8 @@ namespace Settlers
             else if (gs == GameState.Playing)
             {
                 string[] s = null;
+                int[] bMID = null;
+                bool canCreate = false;
 
                 foreach (var item in GameMenuButtons)
                 {
@@ -129,7 +142,49 @@ namespace Settlers
                     if (item.MouseOver(ms)) { item.ChangeState(2); } else { item.ChangeState(1); }
                     if (item.LeftClick(ms, prevMS))
                     {
-                        buildings.Add(new Building((buildings == null || buildings.Count == 0) ? 1 : buildings.Max(x => x.ID) + 1, new Rectangle(0, 0, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), Textures[s[1]], BuildingStatus.Placing, item.buildingType));
+                        bMID = connector.GetBuildingTypeCreate(item.buildingType);
+                        foreach (var material in basematerials)
+                        {
+                            if (material.Key.Name == "Wood")
+                            {
+                                if (material.Value >= bMID[0])
+                                {
+                                    canCreate = true;
+                                }
+                                else
+                                {
+                                    canCreate = false;
+                                }
+                                
+                            }
+                            if (material.Key.Name == "Stone")
+                            {
+                                if (material.Value >= bMID[1])
+                                {
+                                    canCreate = true;
+                                }
+                                else
+                                {
+                                    canCreate = false;
+                                }
+
+                            }
+                            
+                        }
+                        if (canCreate)
+                        {
+                            buildings.Add(new Building((buildings == null || buildings.Count == 0) ? 1 : buildings.Max(x => x.ID) + 1, new Rectangle(0, 0, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), Textures[s[1]], BuildingStatus.Placing, item.buildingType, false));
+                            var wood = basematerials.FirstOrDefault(x => x.Key.Name == "Wood").Key;
+                            if (basematerials.TryGetValue(wood,out int oldValue))
+                            {
+                                basematerials[wood] = oldValue - bMID[0];
+                            }
+                            var stone = basematerials.FirstOrDefault(x => x.Key.Name == "Stone").Key;
+                            if (basematerials.TryGetValue(stone, out oldValue))
+                            {
+                                basematerials[stone] = oldValue - bMID[1];
+                            }
+                        }
                     }
                 }
                 this.map.Update(ms, prevMS, GameMenuButtons, Textures);
@@ -137,29 +192,37 @@ namespace Settlers
                 {
                     this.buildings.ForEach(x => x.Update());
 
-                    var asd = buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing);
-                    if (asd != null)
+                    var move = buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing);
+                    if (move != null)
                     {
-                        if (ks.IsKeyDown(Keys.W) && map.CheckTile(Direction.Up, asd.Step(Direction.Up)))
-                            asd.MoveBuilding(Direction.Up);
-                        if (ks.IsKeyDown(Keys.S) && map.CheckTile(Direction.Down, asd.Step(Direction.Down)))
-                            asd.MoveBuilding(Direction.Down);
-                        if (ks.IsKeyDown(Keys.D) && map.CheckTile(Direction.Right, asd.Step(Direction.Right)))
-                            asd.MoveBuilding(Direction.Right);
-                        if (ks.IsKeyDown(Keys.A) && map.CheckTile(Direction.Left, asd.Step(Direction.Left)))
-                            asd.MoveBuilding(Direction.Left);
+                        if (ks.IsKeyDown(Keys.W) && map.CheckTile(Direction.Up, move.Step(Direction.Up)))
+                            move.MoveBuilding(Direction.Up);
+                        if (ks.IsKeyDown(Keys.S) && map.CheckTile(Direction.Down, move.Step(Direction.Down)))
+                            move.MoveBuilding(Direction.Down);
+                        if (ks.IsKeyDown(Keys.D) && map.CheckTile(Direction.Right, move.Step(Direction.Right)))
+                            move.MoveBuilding(Direction.Right);
+                        if (ks.IsKeyDown(Keys.A) && map.CheckTile(Direction.Left, move.Step(Direction.Left)))
+                            move.MoveBuilding(Direction.Left);
                         if (ks.IsKeyDown(Keys.Enter))
                         {
-                            map.PlaceBuilding(asd.Bounds);
-                            asd.Status = BuildingStatus.Construction;
+                            map.PlaceBuilding(move.Bounds);
+                            move.Status = BuildingStatus.Construction;
                         }
                     }
-
                 }
-
                 if (ks.IsKeyDown(Keys.Escape))
                     gs = GameState.Pause;
+                this.outputs.ForEach(x =>
+                {
+                    foreach (var item in basematerials)
+                    {
+                        if (item.Key.Name == x.Name)
+                        {
 
+                            x.Update(item.Key, item.Value);
+                        }
+                    }
+                });
             }
             else if (gs == GameState.Pause)
             {

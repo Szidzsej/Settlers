@@ -15,12 +15,13 @@ namespace Settlers
         public Texture2D Texture { get; set; }
         public Rectangle Bounds { get; set; }
         public BuildingStatus Status { get; set; }
+        public bool HasWorker { get; set; }
 
         public Rectangle NextStep { get; set; }
         public bool IsMoving { get; set; }
         public Vector2 Origin;
 
-        public Building(int id, Rectangle iRectangle, Texture2D ITexture, BuildingStatus iStatus, BuildingTypeEnum bTID)
+        public Building(int id, Rectangle iRectangle, Texture2D ITexture, BuildingStatus iStatus, BuildingTypeEnum bTID, bool iHasWorker)
         {
             this.Status = iStatus;
             this.Rectangle = iRectangle;
@@ -28,6 +29,7 @@ namespace Settlers
             this.ID = id;
             this.BuildingType = bTID;
             this.Origin = new Vector2(0, 0);
+            this.HasWorker = iHasWorker;
         }
         public Building(int id, BuildingTypeEnum bTID, Rectangle iRectangle, BuildingStatus iStatus)
         {
@@ -36,12 +38,13 @@ namespace Settlers
             this.Rectangle = iRectangle;
             this.Status = iStatus;
         }
-        public Building(Rectangle iRectangle, Texture2D ITexture, BuildingStatus iStatus, BuildingTypeEnum bTID)
+        public Building(Rectangle iRectangle, Texture2D ITexture, BuildingStatus iStatus, BuildingTypeEnum bTID, bool iHasWorker)
         {
             this.Status = iStatus;
             this.Rectangle = iRectangle;
             this.Texture = ITexture;
             this.BuildingType = bTID;
+            this.HasWorker = iHasWorker;
         }
 
         public void Draw(SpriteBatch sprite)

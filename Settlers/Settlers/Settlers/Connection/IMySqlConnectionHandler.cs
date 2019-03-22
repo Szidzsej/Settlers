@@ -19,10 +19,10 @@ namespace Settlers
         /// </summary>
         /// <returns></returns>
         bool TryOpen();
-        List<BaseMaterial> GetBaseMaterial();
         BuildingType GetBuildingType();
-        List<BuildingTypeCreate> GetBuildingTypeCreate();
+        int[] GetBuildingTypeCreate(BuildingTypeEnum bEnum);
         List<Building> GetBuilding();
+        Dictionary<BaseMaterial,int> GetBaseMaterial();
         void InsertBuilding(List<Building> buildings);
         void UpdateBuilding();
         void DeleteBuilding();

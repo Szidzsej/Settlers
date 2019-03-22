@@ -23,11 +23,15 @@ namespace Settlers
             this.Position = iPosition;
             this.Color = iColor;
             this.FontStyle = iFontStyle;
-            this.Origin = FontStyle.MeasureString(Text) / 2;
+            //this.Origin = FontStyle.MeasureString(Text) / 2;
         }
         public void Draw(SpriteBatch sprite)
         {
-            sprite.DrawString(this.FontStyle, Text, Position, Color,0, Origin, 1.0f, SpriteEffects.None, 0.5f);
+            sprite.DrawString(this.FontStyle, this.Text, this.Position, this.Color,0, new Vector2(0,0), 1.0f, SpriteEffects.None, 0.5f);
+        }
+        public void Update(BaseMaterial bM, int value)
+        {
+            this.Text = $"{bM.Name}: {value}";
         }
     }
 }

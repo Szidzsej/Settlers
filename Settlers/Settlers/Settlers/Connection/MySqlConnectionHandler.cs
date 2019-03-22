@@ -18,16 +18,28 @@ namespace Settlers
             connection = new MySqlConnection(connectionString);
         }
 
-        public List<BuildingTypeCreate> GetBuildingTypeCreate()
+        public int[] GetBuildingTypeCreate(BuildingTypeEnum bEnum)
         {
-            List<BuildingTypeCreate> temp = new List<BuildingTypeCreate>();
-            using (MySqlCommand command = new MySqlCommand("Select ID,EpuletTipusID,AlapanyagID,Mennyiseg From EpuletTipusElkeszites", connection)) 
+            
+            int[] temp = new int[2];
+
+            using (MySqlCommand command = new MySqlCommand("Select EpuletTipusID,AlapanyagID,Mennyiseg From EpuletTipusElkeszites", connection)) 
             {
                 using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
                 {
                     while (MySqlDataReader.Read())
                     {
-                        temp.Add(new Settlers.BuildingTypeCreate(MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("ID")),MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("EpuletTipusID")),MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("AlapanyagID")),MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("Mennyiseg"))));
+                        if ((int)bEnum == MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("EpuletTipusID")))
+                        {
+                            if (MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("AlapanyagID"))==1)
+                            {
+                                temp[0] = MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("Mennyiseg"));
+                            }
+                            else
+                            {
+                                temp[1] = MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("Mennyiseg"));
+                            }
+                        }
                     }
                 }
             }
@@ -65,16 +77,16 @@ namespace Settlers
             }
         }
 
-        public List<BaseMaterial> GetBaseMaterial()
+        public Dictionary<BaseMaterial,int> GetBaseMaterial()
         {
-            List<BaseMaterial> temp = new List<BaseMaterial>();
-            using (MySqlCommand command = new MySqlCommand("Select ID,Nev From Alapanyag", connection))
+            Dictionary<BaseMaterial, int> temp = new Dictionary<BaseMaterial, int>();
+            using (MySqlCommand command = new MySqlCommand("Select ID,Nev,KezdoMennyiseg From Alapanyag", connection))
             {
                 using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
                 {
                     while (MySqlDataReader.Read())
                     {
-                        temp.Add(new Settlers.BaseMaterial(MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("ID")), MySqlDataReader.GetString(MySqlDataReader.GetOrdinal("Nev"))));
+                        temp.Add(new Settlers.BaseMaterial(MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("ID")), MySqlDataReader.GetString(MySqlDataReader.GetOrdinal("Nev"))),MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("KezdoMennyiseg")));
                     }
                 }
             }
