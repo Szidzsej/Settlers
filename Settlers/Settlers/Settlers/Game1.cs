@@ -15,6 +15,7 @@ namespace Settlers
 {
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        #region Változók
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private Dictionary<string, Texture2D> Textures = new Dictionary<string, Texture2D>();
@@ -33,6 +34,7 @@ namespace Settlers
 
         Map map;
         private MySqlConnectionHandler connector;
+        #endregion
         #region Menu gombok
         Button startButton;
         Button exitButton;
@@ -55,6 +57,7 @@ namespace Settlers
             graphics.ApplyChanges();
             this.IsMouseVisible = true;
         }
+
         protected override void Initialize()
         {
             gs = GameState.Menu;
@@ -91,7 +94,6 @@ namespace Settlers
         {
             prevMS = ms;
             ms = Mouse.GetState();
-
             prevKs = ks;
             ks = Keyboard.GetState();
             if (gs == GameState.Menu)
@@ -111,6 +113,7 @@ namespace Settlers
                 }
                 if (loadButton.LeftClick(ms,prevMS))
                 {
+                    #region Épület Betöltés
                     buildings = connector.GetBuilding();
                     string s = "";
                     foreach (var item in buildings)
@@ -119,11 +122,17 @@ namespace Settlers
                         item.Bounds = item.Rectangle;
                         item.Texture = Textures[s];
                     }
+                    #endregion
+
+                    basematerials = connector.GetSavedMaterial();
                     gs = GameState.Playing;
 
+                    #region Pálya és a texturák betöltése
                     this.map = new Map();
-                    this.map.InitTiles(Textures["grass"], Textures["tree"], Textures["stone"], Textures["buildingmenu"]);
+                    map.Tiles = connector.GetTiles();
+                    this.map.InitLoadedTiles(Textures["grass"], Textures["tree"], Textures["stone"], Textures["buildingmenu"]);
                     this.GameMenuButtons = this.map.InitInGameMenu(Textures);
+                    #endregion
                 }
                 if (startButton.MouseOver(ms)) { startButton.ChangeState(2); } else { startButton.ChangeState(1); }
                 if (exitButton.MouseOver(ms)) { exitButton.ChangeState(2); } else { exitButton.ChangeState(1); }
@@ -132,10 +141,11 @@ namespace Settlers
             }
             else if (gs == GameState.Playing)
             {
+                #region Épület létrehozás
                 string[] s = null;
                 int[] bMID = null;
                 bool canCreate = false;
-
+                bool cannotCreate = false;
                 foreach (var item in GameMenuButtons)
                 {
                     s = Textures.FirstOrDefault(x => x.Value == item.Texture).Key.Split('_');
@@ -167,27 +177,40 @@ namespace Settlers
                                 {
                                     canCreate = false;
                                 }
-
                             }
-                            
                         }
                         if (canCreate)
                         {
-                            buildings.Add(new Building((buildings == null || buildings.Count == 0) ? 1 : buildings.Max(x => x.ID) + 1, new Rectangle(0, 0, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), Textures[s[1]], BuildingStatus.Placing, item.buildingType, false));
-                            var wood = basematerials.FirstOrDefault(x => x.Key.Name == "Wood").Key;
-                            if (basematerials.TryGetValue(wood,out int oldValue))
+                            if (buildings != null || buildings.Count > 0)
                             {
-                                basematerials[wood] = oldValue - bMID[0];
+                                foreach (var b in buildings)
+                                {
+                                    if ((int)b.Status == 0)
+                                    {
+                                        cannotCreate = true;
+                                    }
+                                }
                             }
-                            var stone = basematerials.FirstOrDefault(x => x.Key.Name == "Stone").Key;
-                            if (basematerials.TryGetValue(stone, out oldValue))
+                            if (!cannotCreate)
                             {
-                                basematerials[stone] = oldValue - bMID[1];
+                                buildings.Add(new Building((buildings == null || buildings.Count == 0) ? 1 : buildings.Max(x => x.ID) + 1, new Rectangle(0, 0, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), Textures[s[1]], BuildingStatus.Placing, item.buildingType, false));
+                                var wood = basematerials.FirstOrDefault(x => x.Key.Name == "Wood").Key;
+                                if (basematerials.TryGetValue(wood, out int oldValue))
+                                {
+                                    basematerials[wood] = oldValue - bMID[0];
+                                }
+                                var stone = basematerials.FirstOrDefault(x => x.Key.Name == "Stone").Key;
+                                if (basematerials.TryGetValue(stone, out oldValue))
+                                {
+                                    basematerials[stone] = oldValue - bMID[1];
+                                }
                             }
                         }
                     }
                 }
+                #endregion
                 this.map.Update(ms, prevMS, GameMenuButtons, Textures);
+                #region Épület mozgatás
                 if (this.buildings.Count() != 0)
                 {
                     this.buildings.ForEach(x => x.Update());
@@ -206,10 +229,11 @@ namespace Settlers
                         if (ks.IsKeyDown(Keys.Enter))
                         {
                             map.PlaceBuilding(move.Bounds);
-                            move.Status = BuildingStatus.Construction;
+                            buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing).Status = BuildingStatus.Construction;
                         }
                     }
                 }
+                #endregion
                 if (ks.IsKeyDown(Keys.Escape))
                     gs = GameState.Pause;
                 this.outputs.ForEach(x =>
@@ -218,7 +242,6 @@ namespace Settlers
                     {
                         if (item.Key.Name == x.Name)
                         {
-
                             x.Update(item.Key, item.Value);
                         }
                     }
@@ -237,7 +260,49 @@ namespace Settlers
                 }
                 if(saveButton.LeftClick(ms,prevMS))
                 {
-                    connector.InsertBuilding(buildings);
+                    #region Nyersanyagok mentése
+                    if (basematerials.Count() !=0 && basematerials != null)
+                    {
+                        connector.DeleteMaterials();
+                        foreach (var item in basematerials)
+                        {
+                            connector.SaveMaterials(item.Key.ID, item.Value);
+                        }
+                    }
+                    #endregion
+                    #region Épületek mentése
+                    if (buildings.Count() !=0 && buildings != null)
+                    {
+                        connector.DeleteBuilding();
+                        connector.DeleteTiles();
+                        foreach (var item in buildings)
+                        {
+                            connector.InsertBuilding(item);
+                        }
+                    }
+                    #endregion
+                    #region Tileok mentése
+                    int idTile = 1;
+                    string line = "";
+                    foreach (var item in map.Tiles)
+                    {
+                        if (item.State != TileState.Menu && item != null)
+                        {
+                            if (idTile <= 59)
+                            {
+                                line += $"{item.Rectangle.X},{item.Rectangle.Y},{(int)item.State};";
+                            }
+                            else
+                            {
+                                line += $"{item.Rectangle.X},{item.Rectangle.Y},{(int)item.State};";
+                                connector.InsertTiles(line);
+                                line = "";
+                                idTile = 0;
+                            }
+                            idTile++;
+                        }
+                    }
+                    #endregion
                 }
                 if (continueButton.MouseOver(ms)) { continueButton.ChangeState(2); } else { continueButton.ChangeState(1); }
                 if (saveButton.MouseOver(ms)) { saveButton.ChangeState(2); } else { saveButton.ChangeState(1); }

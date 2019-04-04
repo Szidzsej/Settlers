@@ -6,3 +6,5 @@ C:\Users\Horváth András\Desktop\Pródzsekt munka\Settlers\Settlers\SettlersCon
 C:\Users\Horváth András\Desktop\Pródzsekt munka\Settlers\Settlers\SettlersContent\obj\x86\Debug\SettlersContent.contentproj.CoreCompileInputs.cache
 D:\Pródzsekt munka\Settlers\Settlers\SettlersContent\obj\x86\Debug\SettlersContent.contentprojAssemblyReference.cache
 D:\Pródzsekt munka\Settlers\Settlers\SettlersContent\obj\x86\Debug\SettlersContent.contentproj.CoreCompileInputs.cache
+E:\Pródzsekt munka\Settlers\Settlers\SettlersContent\obj\x86\Debug\SettlersContent.contentproj.CoreCompileInputs.cache
+E:\Pródzsekt munka\Settlers\Settlers\SettlersContent\obj\x86\Debug\SettlersContent.contentprojResolveAssemblyReference.cache

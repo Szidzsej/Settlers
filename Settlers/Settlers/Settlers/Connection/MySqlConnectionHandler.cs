@@ -20,7 +20,6 @@ namespace Settlers
 
         public int[] GetBuildingTypeCreate(BuildingTypeEnum bEnum)
         {
-            
             int[] temp = new int[2];
 
             using (MySqlCommand command = new MySqlCommand("Select EpuletTipusID,AlapanyagID,Mennyiseg From EpuletTipusElkeszites", connection)) 
@@ -54,26 +53,18 @@ namespace Settlers
             }
         }
 
-        public void InsertBuilding(List<Building> buildings)
+        public void InsertBuilding(Building building)
         {
             string helper = null;
-            DeleteBuilding();
             using (MySqlCommand command = new MySqlCommand("Insert Into epulet (ID,EpuletTipusID,Koordinata, Statusz) Values(@id,@bTID,@coor,@stat)",connection))
             {
-                if ((buildings.Count() != 0) && buildings != null)
-                {
-                    foreach (var item in buildings)
-                    {
+                command.Parameters.AddWithValue("@id", building.ID);
+                command.Parameters.AddWithValue("@bTID", (int)building.BuildingType);
+                helper = building.Bounds.X + "," + building.Bounds.Y;
+                command.Parameters.AddWithValue("@coor", helper);
                         
-                        command.Parameters.AddWithValue("@id", item.ID);
-                        command.Parameters.AddWithValue("@bTID", (int)item.BuildingType);
-                        helper = item.Bounds.X + "," + item.Bounds.Y;
-                        command.Parameters.AddWithValue("@coor", helper);
-                        
-                        command.Parameters.AddWithValue("@stat", item.Status.ToString());
-                        command.ExecuteNonQuery();
-                    }
-                }
+                command.Parameters.AddWithValue("@stat", (int)building.Status);
+                command.ExecuteNonQuery();
             }
         }
 
@@ -189,6 +180,84 @@ namespace Settlers
         public void UpdateBuilding()
         {
             throw new NotImplementedException();
+        }
+
+        public void DeleteTiles()
+        {
+            using (MySqlCommand command = new MySqlCommand("DELETE FROM Mezok WHere 1", connection))
+            {
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public void InsertTiles(string line)
+        {
+            using (MySqlCommand command = new MySqlCommand("Insert Into Mezok (sor) Values(@line)", connection))
+            {
+                command.Parameters.AddWithValue("@line", line);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public List<Tile> GetTiles()
+        {
+            List<Tile> temp = new List<Tile>();
+            string[] lines = new string[60];
+            using (MySqlCommand command = new MySqlCommand("Select sor From Mezok", connection))
+            {
+                using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
+                {
+                    while (MySqlDataReader.Read())
+                    {
+                        lines = MySqlDataReader.GetString(MySqlDataReader.GetOrdinal("sor")).Split(';');
+                        foreach (var item in lines)
+                        {
+                            string[] helper = new string[3];
+                            helper = item.Split(',');
+                            if (item != "")
+                            {
+                                temp.Add(new Tile(new Rectangle(int.Parse(helper[0]), int.Parse(helper[1]), Globals.TILESIZE, Globals.TILESIZE), (TileState)int.Parse(helper[2])));
+
+                            }
+
+                        }
+                    }
+                }
+            }
+            return temp;
+        }
+
+        public void SaveMaterials(int bMaterialID, int count)
+        {
+            using (MySqlCommand command = new MySqlCommand("Insert Into Mentett_alapanyag (alapanyag_id,mennyiseg) Values(@bm, @count)", connection))
+            {
+                command.Parameters.AddWithValue("@bm", bMaterialID);
+                command.Parameters.AddWithValue("@count", count);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public void DeleteMaterials()
+        {
+            using (MySqlCommand command = new MySqlCommand("DELETE FROM Mentett_alapanyag WHere 1", connection))
+            {
+                command.ExecuteNonQuery();
+            }
+        }
+        public Dictionary<BaseMaterial, int> GetSavedMaterial()
+        {
+            Dictionary<BaseMaterial, int> temp = new Dictionary<BaseMaterial, int>();
+            using (MySqlCommand command = new MySqlCommand("Select a.ID,a.Nev,m.Mennyiseg From Alapanyag a INNER JOIN mentett_alapanyag m ON a.id= m.alapanyag_ID", connection))
+            {
+                using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
+                {
+                    while (MySqlDataReader.Read())
+                    {
+                        temp.Add(new Settlers.BaseMaterial(MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("ID")), MySqlDataReader.GetString(MySqlDataReader.GetOrdinal("Nev"))), MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("Mennyiseg")));
+                    }
+                }
+            }
+            return temp;
         }
     }
 }

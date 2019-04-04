@@ -19,6 +19,11 @@ namespace Settlers
             this.Texture = ITexture;
             this.State = iState;
         }
+        public Tile(Rectangle iRectangle, TileState iState)
+        {
+            this.Rectangle = iRectangle;
+            this.State = iState;
+        }
 
         public void Draw(SpriteBatch sprite)
         {

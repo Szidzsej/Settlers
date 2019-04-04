@@ -23,8 +23,14 @@ namespace Settlers
         int[] GetBuildingTypeCreate(BuildingTypeEnum bEnum);
         List<Building> GetBuilding();
         Dictionary<BaseMaterial,int> GetBaseMaterial();
-        void InsertBuilding(List<Building> buildings);
+        void InsertBuilding(Building building);
         void UpdateBuilding();
         void DeleteBuilding();
+        List<Tile> GetTiles();
+        void InsertTiles(string line);
+        void DeleteTiles();
+        void SaveMaterials(int ID, int count);
+        Dictionary<BaseMaterial, int> GetSavedMaterial();
+        void DeleteMaterials();
     }
 }

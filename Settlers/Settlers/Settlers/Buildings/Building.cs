@@ -51,9 +51,7 @@ namespace Settlers
         {
             sprite.Draw(this.Texture, new Rectangle(this.Bounds.X, this.Bounds.Y, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), null, Color.White, 0, this.Origin, SpriteEffects.None, 0f);
         }
-
-
-
+        
         public void Update()
         {
             if (this.IsMoving && this.Status == BuildingStatus.Placing)
@@ -97,7 +95,6 @@ namespace Settlers
         {
             if (!this.IsMoving)
             {
-
                 this.NextStep = Step(iDirection);
                 this.IsMoving = true;
             }
@@ -110,13 +107,11 @@ namespace Settlers
 
         public Rectangle Step(Direction iDirection)
         {
-
             switch (iDirection)
             {
                 case Direction.Up:
                     {
                         return new Rectangle(this.Bounds.X, this.Bounds.Y - Globals.TILESIZE, this.Bounds.Width, this.Bounds.Height);
-
                     }
                 case Direction.Right:
                     {

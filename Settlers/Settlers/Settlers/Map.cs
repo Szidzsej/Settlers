@@ -157,15 +157,43 @@ namespace Settlers
             return false;
         }
 
+        public List<Tile> InitLoadedTiles(Texture2D grass, Texture2D tree, Texture2D stone, Texture2D buildingMenu)
+        {
+            foreach (var tile in Tiles)
+            {
+                if (tile.State == TileState.Tree)
+                {
+                    tile.Texture = tree;
+                }
+                else
+                {
+                    if (tile.State == TileState.Grass || tile.State == TileState.Building)
+                    {
+                        tile.Texture = grass;
+                    }
+                    else
+                    {
+                        if (tile.State == TileState.Stone)
+                        {
+                            tile.Texture = stone;
+                        }
+                        else
+                        {
+                            tile.Texture = buildingMenu;
+                        }
+                    }
+                }
+            }
+            Tiles.Add(new Tile(new Rectangle(xMapEnd + Globals.TILESIZE, 0, 200, 600), buildingMenu, TileState.Menu));
+            return this.Tiles;
+        }
 
         public void PlaceBuilding(Rectangle r)
         {
             int xCoorStart = 0;
-            int yCoorStart = 0;
-            
-                    
-                    xCoorStart = r.X;
-                    yCoorStart = r.Y;
+            int yCoorStart = 0;   
+            xCoorStart = r.X;
+            yCoorStart = r.Y;
              
             List<Tile> tileHelp = new List<Tile>();
             foreach (var item in Tiles)
