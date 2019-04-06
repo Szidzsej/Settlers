@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Settlers
 {
-    public class Building
+    public class Building 
     {
         public int ID { get; set; }
         public BuildingTypeEnum BuildingType { get; set; }
@@ -16,7 +16,10 @@ namespace Settlers
         public Rectangle Bounds { get; set; }
         public BuildingStatus Status { get; set; }
         public bool HasWorker { get; set; }
+        public Production Production { get; set; }
+        public bool IsItEmpty { get; set; }
 
+        public int BuildTime { get; set; }
         public Rectangle NextStep { get; set; }
         public bool IsMoving { get; set; }
         public Vector2 Origin;
@@ -30,6 +33,8 @@ namespace Settlers
             this.BuildingType = bTID;
             this.Origin = new Vector2(0, 0);
             this.HasWorker = iHasWorker;
+            this.BuildTime = 0;
+            this.IsItEmpty = false;
         }
         public Building(int id, BuildingTypeEnum bTID, Rectangle iRectangle, BuildingStatus iStatus)
         {
@@ -37,6 +42,8 @@ namespace Settlers
             this.BuildingType = bTID;
             this.Rectangle = iRectangle;
             this.Status = iStatus;
+            this.BuildTime = 0;
+            this.IsItEmpty = false;
         }
         public Building(Rectangle iRectangle, Texture2D ITexture, BuildingStatus iStatus, BuildingTypeEnum bTID, bool iHasWorker)
         {
@@ -45,11 +52,27 @@ namespace Settlers
             this.Texture = ITexture;
             this.BuildingType = bTID;
             this.HasWorker = iHasWorker;
+            this.BuildTime = 0;
+            this.IsItEmpty = false;
         }
 
         public void Draw(SpriteBatch sprite)
         {
-            sprite.Draw(this.Texture, new Rectangle(this.Bounds.X, this.Bounds.Y, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), null, Color.White, 0, this.Origin, SpriteEffects.None, 0f);
+            if (this.Status == BuildingStatus.Construction)
+            {
+                sprite.Draw(this.Texture, new Rectangle(this.Bounds.X, this.Bounds.Y, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), null, Color.Red, 0, this.Origin, SpriteEffects.None, 0f);
+            }
+            else
+            {
+                if (!HasWorker && this.Status == BuildingStatus.Ready && this.BuildingType != BuildingTypeEnum.House)
+                {
+                    sprite.Draw(this.Texture, new Rectangle(this.Bounds.X, this.Bounds.Y, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), null, Color.Yellow, 0, this.Origin, SpriteEffects.None, 0f);
+                }
+                else
+                {
+                    sprite.Draw(this.Texture, new Rectangle(this.Bounds.X, this.Bounds.Y, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), null, Color.White, 0, this.Origin, SpriteEffects.None, 0f);
+                }
+            }
         }
         
         public void Update()
@@ -83,6 +106,22 @@ namespace Settlers
                 }
                 else
                     this.IsMoving = false;
+            }
+        }
+        public void UpdateBuidlingStatus(int ms)
+        {
+            BuildTime += ms;
+            if (BuildTime>=Globals.CREATEBUILDINGTIME)
+            {
+                this.Status = BuildingStatus.Ready;
+               
+            }
+        }
+        public void UpdateWorkerStatus(int workers)
+        {
+            if (workers > 0  && this.BuildingType != BuildingTypeEnum.House)
+            {
+                HasWorker = true;
             }
         }
 
@@ -147,6 +186,7 @@ namespace Settlers
             }
             return s;
         }
+
         
     }
 }

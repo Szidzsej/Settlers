@@ -8,3 +8,5 @@ D:\Pródzsekt munka\Settlers\Settlers\SettlersContent\obj\x86\Debug\SettlersCont
 D:\Pródzsekt munka\Settlers\Settlers\SettlersContent\obj\x86\Debug\SettlersContent.contentproj.CoreCompileInputs.cache
 E:\Pródzsekt munka\Settlers\Settlers\SettlersContent\obj\x86\Debug\SettlersContent.contentproj.CoreCompileInputs.cache
 E:\Pródzsekt munka\Settlers\Settlers\SettlersContent\obj\x86\Debug\SettlersContent.contentprojResolveAssemblyReference.cache
+J:\Pródzsekt munka\Settlers\Settlers\SettlersContent\obj\x86\Debug\SettlersContent.contentprojAssemblyReference.cache
+J:\Pródzsekt munka\Settlers\Settlers\SettlersContent\obj\x86\Debug\SettlersContent.contentproj.CoreCompileInputs.cache

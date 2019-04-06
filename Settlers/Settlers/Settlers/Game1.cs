@@ -28,7 +28,8 @@ namespace Settlers
         private List<Building> buildings = new List<Building>();
         private Dictionary<string, SpriteFont> fonts = new Dictionary<string, SpriteFont>();
         private List<Output> outputs = new List<Output>();
-        private int workers = Globals.STARTWORKERS;
+        private int actualWorkers = Globals.STARTWORKERS;
+        private int allWorkers = Globals.STARTWORKERS;
         Dictionary<BaseMaterial, int> basematerials = new Dictionary<BaseMaterial, int>();
         private int yOutput = 410;
 
@@ -76,12 +77,12 @@ namespace Settlers
             continueButton = new Button(100, 70, 200, 100, Textures["folytatasNotP"], Textures["folytatasP"]);
             saveButton = new Button(100, 210, 200, 100, Textures["mentesNotP"], Textures["mentesP"]);
 
-            outputs.Add(new Output("worker", $"Workers: {workers - (buildings.Count(x=> x.HasWorker == true))}/{workers}", new Vector2(910, yOutput), Color.Black, fonts["MyFont"]));
+            outputs.Add(new Output("worker", $"Workers: {actualWorkers - (buildings.Count(x=> x.HasWorker == true))}/{allWorkers}", new Vector2(910, yOutput), Color.Black, fonts["MyFont"],true));
             basematerials = this.connector.GetBaseMaterial();
             foreach (var item in basematerials)
             {
                 yOutput += 20;
-                outputs.Add(new Output(item.Key.Name,$"{item.Key.Name}: {item.Value}",new Vector2(910, yOutput),Color.Black,fonts["MyFont"]));
+                outputs.Add(new Output(item.Key.Name,$"{item.Key.Name}: {item.Value}",new Vector2(910, yOutput),Color.Black,fonts["MyFont"],false));
             }
         }
 
@@ -193,7 +194,9 @@ namespace Settlers
                             }
                             if (!cannotCreate)
                             {
-                                buildings.Add(new Building((buildings == null || buildings.Count == 0) ? 1 : buildings.Max(x => x.ID) + 1, new Rectangle(0, 0, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), Textures[s[1]], BuildingStatus.Placing, item.buildingType, false));
+                                Building building = new Building((buildings == null || buildings.Count == 0) ? 1 : buildings.Max(x => x.ID) + 1, new Rectangle(0, 0, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), Textures[s[1]], BuildingStatus.Placing, item.buildingType, false);
+                                building.Production = connector.GetProductions(building);
+                                buildings.Add(building);
                                 var wood = basematerials.FirstOrDefault(x => x.Key.Name == "Wood").Key;
                                 if (basematerials.TryGetValue(wood, out int oldValue))
                                 {
@@ -236,16 +239,44 @@ namespace Settlers
                 #endregion
                 if (ks.IsKeyDown(Keys.Escape))
                     gs = GameState.Pause;
+                actualWorkers = allWorkers - (buildings.Count(x => x.HasWorker == true));
                 this.outputs.ForEach(x =>
                 {
-                    foreach (var item in basematerials)
+                    if (x.IsItWorker)
                     {
-                        if (item.Key.Name == x.Name)
+                        x.Update(null, 0, actualWorkers, allWorkers);
+                    }
+                    else
+                    {
+                        foreach (var item in basematerials)
                         {
-                            x.Update(item.Key, item.Value);
+                            if (item.Key.Name == x.Name)
+                            {
+                                x.Update(item.Key, item.Value,actualWorkers, allWorkers);
+                            }
                         }
                     }
                 });
+                this.buildings.ForEach(x =>
+                {
+                    if(x.Status == BuildingStatus.Ready && x.BuildingType == BuildingTypeEnum.House && x.IsItEmpty == false)
+                    {
+                        allWorkers = x.Production.HouseUpdate(x,allWorkers);
+                    }
+                    if (x.Status == BuildingStatus.Ready && x.BuildingType != BuildingTypeEnum.House)
+                    {
+                        x.Production.Update(x,basematerials,(int)gameTime.ElapsedGameTime.TotalMilliseconds);
+                    }
+                    if (x.Status == BuildingStatus.Construction)
+                    {
+                        x.UpdateBuidlingStatus((int)gameTime.ElapsedGameTime.TotalMilliseconds);
+                    }
+                    if (!x.HasWorker)
+                    {
+                        x.UpdateWorkerStatus(actualWorkers);
+                    }
+                });
+
             }
             else if (gs == GameState.Pause)
             {

@@ -32,5 +32,6 @@ namespace Settlers
         void SaveMaterials(int ID, int count);
         Dictionary<BaseMaterial, int> GetSavedMaterial();
         void DeleteMaterials();
+        Production GetProductions(Building b);
     }
 }

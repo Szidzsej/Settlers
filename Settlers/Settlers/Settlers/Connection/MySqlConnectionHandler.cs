@@ -259,5 +259,37 @@ namespace Settlers
             }
             return temp;
         }
+       public Production GetProductions(Building b)
+        {
+            Production temp = new Production();
+            int bTID = (int)b.BuildingType;
+            using (MySqlCommand command = new MySqlCommand("Select a.ID as ID, a.Nev as Nev From Alapanyag_Gyartas gy INNER JOIN Alapanyag a ON gy.KeszAlapanyagID = a.ID WHERE EpuletTipusID = @bTID", connection))
+            {
+                command.Parameters.AddWithValue("@bTID", bTID);
+                using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
+                {
+                    while (MySqlDataReader.Read())
+                    {
+                        temp.ReadyMaterial.ID = MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("ID"));
+                        temp.ReadyMaterial.Name = MySqlDataReader.GetString(MySqlDataReader.GetOrdinal("Nev"));
+                    }
+                }
+            }
+            using (MySqlCommand command = new MySqlCommand("Select a.ID as ID, a.Nev as Nev,Mennyiseg From Alapanyag_Gyartas gy INNER JOIN Alapanyag a ON gy.AlapanyagID = a.ID WHERE EpuletTipusID = @bTID", connection))
+            {
+                command.Parameters.AddWithValue("@bTID", bTID);
+                using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
+                {
+                    while (MySqlDataReader.Read())
+                    {
+                            temp.BaseMaterials.Add(new BaseMaterial(MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("ID")), MySqlDataReader.GetString(MySqlDataReader.GetOrdinal("Nev"))), MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("Mennyiseg")));
+                            
+                           // temp.BaseMaterials.Add(new BaseMaterial(MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("ID")), MySqlDataReader.GetString(MySqlDataReader.GetOrdinal("Nev"))), MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("Mennyiseg")));
+
+                    }
+                }
+            }
+            return temp;
+        }
     }
 }

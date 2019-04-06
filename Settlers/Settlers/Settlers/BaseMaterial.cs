@@ -10,6 +10,9 @@ namespace Settlers
         public int ID { get; set; }
         public string Name { get; set; }
 
+        public BaseMaterial()
+        {
+        }
         public BaseMaterial(int id, string name)
         {
             this.ID = id;

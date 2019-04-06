@@ -13,5 +13,8 @@ namespace Settlers
         public static int TILEROWCOUNT=40;
         public static int TILECOLUMNCOUNT = 60;
         public static int STARTWORKERS = 5;
+        public static int CREATEPRODUCTTIME = 1000;
+        public static int CREATEBUILDINGTIME = 1500;
+        public static int WORKERSPERHOUSE = 5;
     }
 }
