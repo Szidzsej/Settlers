@@ -95,21 +95,19 @@
   <ItemGroup>
     <Compile Include="Buildings\Building.cs" />
     <Compile Include="Buildings\BuildingType.cs" />
-    <Compile Include="Buildings\BuildingTypeCreate.cs" />
-    <Compile Include="Buttons.cs" />
+    <Compile Include="Utilites\Buttons.cs" />
     <Compile Include="Connection\IMySqlConnectionHandler.cs" />
-    <Compile Include="Enums.cs" />
-    <Compile Include="Globals.cs" />
-    <Compile Include="Production.cs" />
-    <Compile Include="Map.cs" />
+    <Compile Include="Utilites\Enums.cs" />
+    <Compile Include="Utilites\Globals.cs" />
+    <Compile Include="Buildings\Production.cs" />
+    <Compile Include="Maps\Map.cs" />
     <Compile Include="Output.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="BaseMaterial.cs" />
     <Compile Include="Connection\MySqlConnectionHandler.cs" />
-    <Compile Include="Buildings\BuildingSpecies.cs" />
-    <Compile Include="Tile.cs" />
+    <Compile Include="Maps\Tile.cs" />
     <Compile Include="Worker.cs" />
   </ItemGroup>
   <ItemGroup>

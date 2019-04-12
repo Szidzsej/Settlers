@@ -88,7 +88,6 @@ namespace Settlers
         {
             List<Building> temp = new List<Building>();
             string[] helper = new string[2];
-            BuildingStatus status;
             using (MySqlCommand command = new MySqlCommand("Select ID,EpuletTipusID,Koordinata,Statusz From Epulet", connection))
             {
                 using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
@@ -96,8 +95,7 @@ namespace Settlers
                     while (MySqlDataReader.Read())
                     {
                         helper = MySqlDataReader.GetString(MySqlDataReader.GetOrdinal("Koordinata")).Split(',');
-                        status = GetStatus(MySqlDataReader.GetString(MySqlDataReader.GetOrdinal("Statusz")));
-                        temp.Add(new Building(MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("ID")),(BuildingTypeEnum)MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("EpuletTipusID")), new Rectangle(int.Parse(helper[0]),int.Parse(helper[1]),Globals.BUILDINGSIZE, Globals.BUILDINGSIZE),status));
+                        temp.Add(new Building(MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("ID")),(BuildingTypeEnum)MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("EpuletTipusID")), new Rectangle(int.Parse(helper[0]),int.Parse(helper[1]),Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), (BuildingStatus) MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("Statusz"))));
                     }
                 }
             }
@@ -119,26 +117,6 @@ namespace Settlers
             }
             return temp;
         }
-        public BuildingStatus GetStatus(string status)
-        {
-            BuildingStatus bs;
-            switch (status)
-            {
-                case "Placing":
-                    bs = BuildingStatus.Placing;
-                    break;
-                case "Construction":
-                    bs = BuildingStatus.Construction;
-                    break;
-                case "Ready":
-                    bs = BuildingStatus.Ready;
-                    break;
-                default:
-                    bs = BuildingStatus.Construction;
-                    break;
-            }
-            return bs;
-        }
 
         /// <summary>
         /// Kapcsolat tesztelése
@@ -153,6 +131,7 @@ namespace Settlers
             }
             catch (Exception ex)
             {
+                return false;
                 throw ex;
             }
         }
@@ -175,6 +154,21 @@ namespace Settlers
                 command.Connection = connection;
                 command.ExecuteNonQuery();
             }
+        }
+        public int SelectTiles()
+        {
+            int temp = 0;
+            using (MySqlCommand command = new MySqlCommand("Select id From Mezok", connection))
+            {
+                using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
+                {
+                    while (MySqlDataReader.Read())
+                    {
+                        temp++;
+                    }
+                }
+            }
+            return temp;
         }
 
         public void UpdateBuilding()

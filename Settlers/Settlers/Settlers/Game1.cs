@@ -32,6 +32,9 @@ namespace Settlers
         private int allWorkers = Globals.STARTWORKERS;
         Dictionary<BaseMaterial, int> basematerials = new Dictionary<BaseMaterial, int>();
         private int yOutput = 410;
+        Texture2D background;
+        private bool ErrorOrNot;
+        private bool cannotLoad = false;
 
         Map map;
         private MySqlConnectionHandler connector;
@@ -50,7 +53,8 @@ namespace Settlers
         public Game1()
         {
             connector = new MySqlConnectionHandler();
-            connector.TryOpen();
+            ErrorOrNot = connector.TryOpen();
+            
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 1100;
@@ -71,19 +75,27 @@ namespace Settlers
 
             Directory.GetFiles("Content/Textures", "*.xnb", SearchOption.AllDirectories).ToList().ForEach(x => Textures.Add(Path.GetFileNameWithoutExtension(x), Content.Load<Texture2D>(Path.Combine(Path.GetDirectoryName(x).Substring(8), Path.GetFileNameWithoutExtension(x)))));
             Directory.GetFiles("Content/Fonts","*.xnb",SearchOption.AllDirectories).ToList().ForEach(x=>fonts.Add(Path.GetFileNameWithoutExtension(x),Content.Load<SpriteFont>(Path.Combine(Path.GetDirectoryName(x).Substring(8), Path.GetFileNameWithoutExtension(x)))));
-            startButton = new Button(100, 70, 200, 100, Textures["startNotP"], Textures["startP"]);
-            exitButton = new Button(100, 340, 200, 100, Textures["exitNotP"], Textures["exitP"]);
-            loadButton = new Button(100, 210, 200, 100, Textures["betoltesNotP"], Textures["betoltesP"]);
-            continueButton = new Button(100, 70, 200, 100, Textures["folytatasNotP"], Textures["folytatasP"]);
-            saveButton = new Button(100, 210, 200, 100, Textures["mentesNotP"], Textures["mentesP"]);
+            startButton = new Button(420, 70, 300, 100, Textures["startNotP"], Textures["startP"]);
+            exitButton = new Button(420, 340, 300, 100, Textures["exitNotP"], Textures["exitP"]);
+            loadButton = new Button(420, 210, 300, 100, Textures["loadNotP"], Textures["loadP"]);
+            continueButton = new Button(420, 70, 300, 100, Textures["continueNotP"], Textures["continueP"]);
+            saveButton = new Button(420, 210, 300, 100, Textures["saveNotP"], Textures["saveP"]);
+            background = Textures["woodenBackground"];
 
             outputs.Add(new Output("worker", $"Workers: {actualWorkers - (buildings.Count(x=> x.HasWorker == true))}/{allWorkers}", new Vector2(910, yOutput), Color.Black, fonts["MyFont"],true));
-            basematerials = this.connector.GetBaseMaterial();
+
+            if(ErrorOrNot)
+                basematerials = this.connector.GetBaseMaterial();
+            else
+                gs = GameState.Error;
+
             foreach (var item in basematerials)
             {
                 yOutput += 20;
                 outputs.Add(new Output(item.Key.Name,$"{item.Key.Name}: {item.Value}",new Vector2(910, yOutput),Color.Black,fonts["MyFont"],false));
             }
+            outputs.Add(new Output("error", $"Error message:\n Cannot create the connection, or can't load the images!\n Please reinstall the game!", new Vector2(150, 100), Color.Yellow, fonts["Errorfont"], true));
+            outputs.Add(new Output("load", $"There is nothing to load! Database currently empty!", new Vector2(180, 480), Color.Yellow, fonts["Errorfont"], true));
         }
 
         protected override void UnloadContent()
@@ -114,26 +126,34 @@ namespace Settlers
                 }
                 if (loadButton.LeftClick(ms,prevMS))
                 {
-                    #region Épület Betöltés
-                    buildings = connector.GetBuilding();
-                    string s = "";
-                    foreach (var item in buildings)
+                    if (connector.SelectTiles() > 0)
                     {
-                        s = item.GetTextureName(item.BuildingType);
-                        item.Bounds = item.Rectangle;
-                        item.Texture = Textures[s];
+                        #region Épület Betöltés
+                        buildings = connector.GetBuilding();
+                        string s = "";
+                        foreach (var item in buildings)
+                        {
+                            s = item.GetTextureName(item.BuildingType);
+                            item.Production = connector.GetProductions(item);
+                            item.Bounds = item.Rectangle;
+                            item.Texture = Textures[s];
+                        }
+                        #endregion
+
+                        basematerials = connector.GetSavedMaterial();
+                        gs = GameState.Playing;
+
+                        #region Pálya és a texturák betöltése
+                        this.map = new Map();
+                        map.Tiles = connector.GetTiles();
+                        this.map.InitLoadedTiles(Textures["grass"], Textures["tree"], Textures["stone"], Textures["buildingmenu"]);
+                        this.GameMenuButtons = this.map.InitInGameMenu(Textures);
+                        #endregion
                     }
-                    #endregion
-
-                    basematerials = connector.GetSavedMaterial();
-                    gs = GameState.Playing;
-
-                    #region Pálya és a texturák betöltése
-                    this.map = new Map();
-                    map.Tiles = connector.GetTiles();
-                    this.map.InitLoadedTiles(Textures["grass"], Textures["tree"], Textures["stone"], Textures["buildingmenu"]);
-                    this.GameMenuButtons = this.map.InitInGameMenu(Textures);
-                    #endregion
+                    else
+                    {
+                        cannotLoad = true;
+                    }
                 }
                 if (startButton.MouseOver(ms)) { startButton.ChangeState(2); } else { startButton.ChangeState(1); }
                 if (exitButton.MouseOver(ms)) { exitButton.ChangeState(2); } else { exitButton.ChangeState(1); }
@@ -217,6 +237,7 @@ namespace Settlers
                 if (this.buildings.Count() != 0)
                 {
                     this.buildings.ForEach(x => x.Update());
+                    bool canBePlacing = false;
 
                     var move = buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing);
                     if (move != null)
@@ -231,8 +252,11 @@ namespace Settlers
                             move.MoveBuilding(Direction.Left);
                         if (ks.IsKeyDown(Keys.Enter))
                         {
-                            map.PlaceBuilding(move.Bounds);
-                            buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing).Status = BuildingStatus.Construction;
+                            canBePlacing = map.PlaceBuilding(move.Bounds);
+                            if (canBePlacing)
+                            {
+                                buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing).Status = BuildingStatus.Construction;
+                            }
                         }
                     }
                 }
@@ -339,6 +363,15 @@ namespace Settlers
                 if (saveButton.MouseOver(ms)) { saveButton.ChangeState(2); } else { saveButton.ChangeState(1); }
                 if (exitButton.MouseOver(ms)) { exitButton.ChangeState(2); } else { exitButton.ChangeState(1); }
             }
+            else if (gs == GameState.Error)
+            {
+                if (exitButton.LeftClick(ms, prevMS))
+                {
+                    gs = GameState.Exit;
+                    Exit();
+                }
+                if (exitButton.MouseOver(ms)) { exitButton.ChangeState(2); } else { exitButton.ChangeState(1); }
+            }
 
             base.Update(gameTime);
         }
@@ -346,12 +379,22 @@ namespace Settlers
         protected override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            GraphicsDevice.Clear(Color.DarkGray);
+            spriteBatch.Draw(background, new Vector2(0, 0), Color.White);
             if (gs == GameState.Menu)
             {
                 startButton.Draw(spriteBatch);
                 exitButton.Draw(spriteBatch);
                 loadButton.Draw(spriteBatch);
+                if (cannotLoad)
+                {
+                    this.outputs.ForEach(x =>
+                    {
+                        if (x.Name == "load")
+                        {
+                            x.Draw(spriteBatch);
+                        }
+                    });
+                }
             }
             else if (gs == GameState.Playing)
             {
@@ -362,7 +405,10 @@ namespace Settlers
                 });
                 this.outputs.ForEach(x =>
                 {
-                    x.Draw(spriteBatch);
+                    if (x.Name != "error" && x.Name != "load")
+                    {
+                        x.Draw(spriteBatch);
+                    }
                 });
                 
             }
@@ -371,6 +417,11 @@ namespace Settlers
                 continueButton.Draw(spriteBatch);
                 saveButton.Draw(spriteBatch);
                 exitButton.Draw(spriteBatch);
+            }
+            if (gs==GameState.Error)
+            {
+                exitButton.Draw(spriteBatch);
+                this.outputs.FirstOrDefault(x => x.Name == "error").Draw(spriteBatch);
             }
 
 

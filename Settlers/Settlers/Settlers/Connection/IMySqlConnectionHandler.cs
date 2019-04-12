@@ -33,5 +33,6 @@ namespace Settlers
         Dictionary<BaseMaterial, int> GetSavedMaterial();
         void DeleteMaterials();
         Production GetProductions(Building b);
+        int SelectTiles();
     }
 }
