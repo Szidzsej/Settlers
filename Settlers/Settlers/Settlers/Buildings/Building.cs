@@ -18,6 +18,7 @@ namespace Settlers
         public bool HasWorker { get; set; }
         public Production Production { get; set; }
         public bool IsItEmpty { get; set; }
+        public int WoodStoneCount { get; set; }
 
         public int BuildTime { get; set; }
         public Rectangle NextStep { get; set; }
@@ -35,6 +36,7 @@ namespace Settlers
             this.HasWorker = iHasWorker;
             this.BuildTime = 0;
             this.IsItEmpty = false;
+            this.WoodStoneCount = 0;
         }
         public Building(int id, BuildingTypeEnum bTID, Rectangle iRectangle, BuildingStatus iStatus)
         {
@@ -44,6 +46,7 @@ namespace Settlers
             this.Status = iStatus;
             this.BuildTime = 0;
             this.IsItEmpty = false;
+            this.WoodStoneCount = 0;
         }
         public Building(Rectangle iRectangle, Texture2D ITexture, BuildingStatus iStatus, BuildingTypeEnum bTID, bool iHasWorker)
         {
@@ -54,8 +57,79 @@ namespace Settlers
             this.HasWorker = iHasWorker;
             this.BuildTime = 0;
             this.IsItEmpty = false;
+            this.WoodStoneCount = 0;
         }
-
+        private List<Tile> BuildingsArea(Map map)
+        {
+            List<Tile> temp = new List<Tile>();
+            int minX = this.Bounds.X - (Globals.TILESIZE*3);
+            if (minX < 0)
+                minX = 0;
+            int minY = this.Bounds.Y - (Globals.TILESIZE * 3);
+            if (minY < 0)
+                minY = 0;
+            int maxX = this.Bounds.X + (Globals.TILESIZE * 4);
+            if (maxX > 900)
+            {
+                maxX = 900;
+            }
+            int maxY = this.Bounds.Y + (Globals.TILESIZE * 4);
+            if (maxY > 600)
+            {
+                maxY = 600;
+            }
+            foreach (var item in map.Tiles)
+            {
+                if (((item.Rectangle.X >= minX )&& (item.Rectangle.X <= maxX)) && ((item.Rectangle.Y >= minY) && (item.Rectangle.Y <= maxY)))
+                {
+                    temp.Add(item);
+                }
+            }
+            return temp;
+        }
+        public List<Tile> ColorizeProductionArea(bool colorized, Map map,SpriteBatch sprite)
+        {
+            List<Tile> colorizedTiles = BuildingsArea(map);
+            foreach (var item in colorizedTiles)
+            {
+                if (colorized)
+                {
+                    item.TileColor = Color.Green;
+                }
+                else
+                {
+                    item.TileColor = Color.White;
+                }
+                
+            }
+            return colorizedTiles;
+        }
+        public void ProductionSum(Map map)
+        {
+            List<Tile> temp = BuildingsArea(map);
+            if (temp != null && temp.Count() > 0)
+            {
+                foreach (var item in temp)
+                {
+                    if (this.BuildingType == BuildingTypeEnum.Woodcutter)
+                    {
+                        if (item.State == TileState.Tree)
+                        {
+                            WoodStoneCount++;
+                        }
+                    }
+                    if (this.BuildingType == BuildingTypeEnum.Stonequarry)
+                    {
+                        if (item.State == TileState.Stone)
+                        {
+                            WoodStoneCount++;
+                        }
+                    }
+                }
+            }
+            else
+                this.WoodStoneCount = 0;
+        }
         public void Draw(SpriteBatch sprite)
         {
             if (this.Status == BuildingStatus.Construction)

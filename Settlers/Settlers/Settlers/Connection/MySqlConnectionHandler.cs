@@ -117,11 +117,6 @@ namespace Settlers
             }
             return temp;
         }
-
-        /// <summary>
-        /// Kapcsolat tesztelése
-        /// </summary>
-        /// <returns></returns>
         public bool TryOpen()
         {
             try
@@ -210,7 +205,7 @@ namespace Settlers
                             helper = item.Split(',');
                             if (item != "")
                             {
-                                temp.Add(new Tile(new Rectangle(int.Parse(helper[0]), int.Parse(helper[1]), Globals.TILESIZE, Globals.TILESIZE), (TileState)int.Parse(helper[2])));
+                                temp.Add(new Tile(new Rectangle(int.Parse(helper[0]), int.Parse(helper[1]), Globals.TILESIZE, Globals.TILESIZE), (TileState)int.Parse(helper[2]),Color.White));
 
                             }
 

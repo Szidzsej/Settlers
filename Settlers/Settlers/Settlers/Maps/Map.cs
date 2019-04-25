@@ -36,26 +36,30 @@ namespace Settlers
         }
         private int[,] MapCreator()
         {
-            int[,] map = new int[40, 60];
-            var a = File.ReadAllLines("nullMap.txt");
-
-            int row = 0;
-            foreach (var x in a)
+            if (File.Exists("Maps/nullMap.txt"))
             {
-                int col = 0;
+                int[,] map = new int[40, 60];
+                string[] a = File.ReadAllLines("Maps/nullMap.txt");
 
-                var splitted = x.Split(';').Where(y => !string.IsNullOrEmpty(y));
-                foreach (var y in splitted)
+                int row = 0;
+                foreach (var x in a)
                 {
-                    map[row, col] = int.Parse(y);
-                    col++;
+                    int col = 0;
+
+                    var splitted = x.Split(';').Where(y => !string.IsNullOrEmpty(y));
+                    foreach (var y in splitted)
+                    {
+                        map[row, col] = int.Parse(y);
+                        col++;
+                    }
+                    row++;
                 }
-                row++;
+                TreeSpawner(map);
+                StoneSpawner(map);
+                TreeSpawner(map);
+                return map;
             }
-            TreeSpawner(map);
-            StoneSpawner(map);
-            TreeSpawner(map);
-            return map;
+            return null;
         }
         private int[,] TreeSpawner(int[,] map)
         {
@@ -129,7 +133,7 @@ namespace Settlers
         }
         public void InitTiles(Texture2D grass, Texture2D tree, Texture2D stone,Texture2D buildingMenu)
         {
-            var a = MapCreator();
+            int[,] a = MapCreator();
             for (int i = 0; i < 40; i++)
             {
                 for (int j = 0; j < 60; j++)
@@ -137,10 +141,10 @@ namespace Settlers
                     Tiles.Add(new Tile(
                     new Rectangle((j * Globals.TILESIZE), (i * Globals.TILESIZE), Globals.TILESIZE, Globals.TILESIZE),
                     (a[i, j] == 0) ? grass : (a[i, j] == 1) ? tree : stone,
-                    (a[i, j] == 0) ? TileState.Grass : (a[i, j] == 1) ? TileState.Tree : TileState.Stone));
+                    (a[i, j] == 0) ? TileState.Grass : (a[i, j] == 1) ? TileState.Tree : TileState.Stone, Color.White));
                 }
             }
-            Tiles.Add(new Tile(new Rectangle(xMapEnd + Globals.TILESIZE, 0, 200, 600), buildingMenu, TileState.Menu));
+            Tiles.Add(new Tile(new Rectangle(xMapEnd + Globals.TILESIZE, 0, 200, 600), buildingMenu, TileState.Menu, Color.White));
 
         }
 
@@ -184,7 +188,7 @@ namespace Settlers
                     }
                 }
             }
-            Tiles.Add(new Tile(new Rectangle(xMapEnd + Globals.TILESIZE, 0, 200, 600), buildingMenu, TileState.Menu));
+            Tiles.Add(new Tile(new Rectangle(xMapEnd + Globals.TILESIZE, 0, 200, 600), buildingMenu, TileState.Menu,Color.White));
             return this.Tiles;
         }
 
@@ -269,8 +273,9 @@ namespace Settlers
         {
             this.Tiles.ForEach(x =>
             {
-                x.Draw(sprite);
+                 x.Draw(sprite);
             });
+
             this.BuildingButtons.ForEach(x =>
             {
                 x.Draw(sprite);

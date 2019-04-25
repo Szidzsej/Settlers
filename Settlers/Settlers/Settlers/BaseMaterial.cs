@@ -9,36 +9,22 @@ namespace Settlers
     {
         public int ID { get; set; }
         public string Name { get; set; }
+        public bool EndQuantity { get; set; }
 
         public BaseMaterial()
         {
+            EndQuantity = false;
         }
         public BaseMaterial(int id, string name)
         {
             this.ID = id;
             this.Name = name;
+            EndQuantity = false;
         }
         public BaseMaterial(string name)
         {
             this.Name = name;
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-        public override int GetHashCode()
-        {
-            return Name.GetHashCode();
-        }
-        public override bool Equals(object obj)
-        {
-            BaseMaterial other = obj as BaseMaterial;
-            if (other == null)
-            {
-                return false;
-            }
-            return Name.Equals(other.Name);
+            EndQuantity = false;
         }
     }
 }

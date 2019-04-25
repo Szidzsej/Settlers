@@ -11,7 +11,9 @@ namespace Settlers
         Playing = 1,
         Pause = 2,
         Exit = 3,
-        Error = 4
+        Error = 4,
+        BeforePlaying = 5,
+        EndGame = 6
     }
     public enum Direction
     {

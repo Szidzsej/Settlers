@@ -20,8 +20,27 @@ namespace Settlers
         public void Update(Building building, Dictionary<BaseMaterial, int> baseMaterials, int ms)
         {
             CreateTime += ms;
-            if (CreateTime >= Globals.CREATEPRODUCTTIME && building.HasWorker)
+            if ((building.BuildingType == BuildingTypeEnum.Woodcutter) || (building.BuildingType == BuildingTypeEnum.Stonequarry))
             {
+                if (building.WoodStoneCount != 0)
+                {
+                    if ((CreateTime >= (Globals.CREATEWOODSTONEPRODUCTTIME / building.WoodStoneCount)) && building.HasWorker)
+                    {
+                        foreach (var item in baseMaterials)
+                        {
+                            if (item.Key.Name == building.Production.ReadyMaterial.Name)
+                            {
+                                baseMaterials[item.Key]++;
+                                CreateTime = 0;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            else if (CreateTime >= Globals.CREATEPRODUCTTIME && building.HasWorker)
+            {
+
                 if ((building.Production.BaseMaterials == null || building.Production.BaseMaterials.Count() == 0))
                 {
                     foreach (var item in baseMaterials)
@@ -54,7 +73,6 @@ namespace Settlers
                                 }
                             }
                         }
-
                     }
                     if (canCreate)
                     {

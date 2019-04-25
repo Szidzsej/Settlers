@@ -39,7 +39,6 @@ namespace Settlers
             }
             else
             {
-
                 this.Text = $"{bM.Name}: {value}";
             }
         }

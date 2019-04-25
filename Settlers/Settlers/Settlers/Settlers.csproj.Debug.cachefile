@@ -28,6 +28,8 @@ Content\Textures\Tiles\grass.xnb
 Content\Textures\Tiles\stone.xnb
 Content\Textures\Tiles\tree.xnb
 Content\Textures\Buttons\startNotP.xnb
-Content\Fonts\MyFont.xnb
 Content\Textures\Background_Textures\woodenBackground.xnb
+Content\Fonts\MyFont.xnb
 Content\Fonts\Errorfont.xnb
+Content\Fonts\BeforeFont.xnb
+Maps\nullMap.txt

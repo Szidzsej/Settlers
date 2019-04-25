@@ -1,7 +1,11 @@
-CREATE TABLE Alapanyag
+CREATE DATABASE IF NOT EXISTS `settlers` DEFAULT CHARACTER SET utf8 COLLATE utf8_hungarian_ci;
+USE `settlers`;
+
+CREATE TABLE IF NOT EXISTS Alapanyag
 (
 	ID INT AUTO_INCREMENT PRIMARY KEY
 	,Nev VARCHAR(200)
+	,IkonAzonosito VARCHAR(200)
     ,KezdoMennyiseg INT
 );
 insert into alapanyag (Nev,KezdoMennyiseg)
@@ -14,7 +18,7 @@ VALUES
 ("Bread",0),
 ("Meat",0);
 
-CREATE TABLE Tipus
+CREATE TABLE IF NOT EXISTS Tipus
 (
 	ID INT AUTO_INCREMENT PRIMARY KEY
 	,Nev VARCHAR(200)
@@ -25,7 +29,7 @@ VALUES
 ("Gyarto"),
 ("Lakohaz");
 
-CREATE TABLE EpuletTipus
+CREATE TABLE IF NOT EXISTS EpuletTipus
 (
 	ID INT AUTO_INCREMENT PRIMARY KEY
 	,Nev VARCHAR(200)
@@ -45,15 +49,16 @@ Values
 ("Lakohaz",3,"house","hower_house"),
 ("Vadaszhaz",1,"hunter","hower_hunter");
 
-CREATE TABLE Epulet
+CREATE TABLE IF NOT EXISTS Epulet
 (
 	ID INT AUTO_INCREMENT PRIMARY KEY
 	,EpuletTipusID INT
 	,Koordinata VARCHAR(200)
+	,AutoGeneralas BIT
     ,Statusz INT
 	,FOREIGN KEY (EpuletTipusID) REFERENCES EpuletTipus(ID)
 );
-CREATE TABLE EpuletTipusElkeszites
+CREATE TABLE IF NOT EXISTS EpuletTipusElkeszites
 (
 	ID INT AUTO_INCREMENT PRIMARY KEY
 	,EpuletTipusID INT
@@ -80,7 +85,7 @@ VAlues
 (7,2,6),
 (8,1,3),
 (8,2,3);
-create table Alapanyag_Gyartas       
+create table IF NOT EXISTS Alapanyag_Gyartas       
 (
 	ID INT AUTO_INCREMENT PRIMARY KEY
 	,KeszAlapanyagID INT
@@ -101,13 +106,45 @@ VALUES
 (6,4,1,6),
 (6,5,2,6),
 (7,NULL,0,8);
-Create table Mezok
+
+create table IF NOT EXISTS Epulet_Queue
+(
+	EpuletID INT
+	,AlapanyagID INT
+	,Mennyiseg INT
+	,FOREIGN KEY (EpuletID) REFERENCES Epulet(ID)
+	,FOREIGN KEY (AlapanyagID) REFERENCES Alapanyag(ID)
+);
+CREATE TABLE IF NOT EXISTS Munkas
+(
+	ID INT AUTO_INCREMENT PRIMARY KEY
+	,Nev VARCHAR(200)
+);
+Insert into Munkas (Nev)
+Values
+("favago"),
+("kofarago"),
+("farmer"),
+("viz hordo"),
+("molnar"),
+("pek"),
+("vadasz");
+
+CREATE TABLE IF NOT EXISTS Epulet_Munkas
+(
+	EpuletID INT
+	,MunkasID INT
+	,FOREIGN KEY (EpuletID) REFERENCES Epulet(ID)
+	,FOREIGN KEY (MunkasID) REFERENCES Munkas(ID)
+);
+
+Create table IF NOT EXISTS Mezok
 (
 ID INT PRIMARY KEY AUTO_INCREMENT,
 sor varchar(1200)
 );
 
-Create table Mentett_Alapanyag
+Create table IF NOT EXISTS Mentett_Alapanyag
 (
 ID int primary key auto_increment,
 alapanyag_ID int,

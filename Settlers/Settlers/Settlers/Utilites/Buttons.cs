@@ -10,11 +10,11 @@ namespace Settlers
 {
     public class Button
     {
-        private Texture2D texture;          // Aktuális textúra
-        private Texture2D texture_state1;   // Textúra 1-es állapota
-        private Texture2D texture_state2;   // Textúra 2-es állapota
-        private int w, h;                   // Szélesség, magasság
-        private Vector2 pos;                // Pozíció
+        private Texture2D texture;          
+        private Texture2D texture_state1;   
+        private Texture2D texture_state2;   
+        private int w, h;                   
+        private Vector2 pos;                
 
         public BuildingTypeEnum buildingType { get; set; }
         public float X { get { return pos.X; } set { pos.X = value; } }
@@ -28,16 +28,6 @@ namespace Settlers
         public Button(int x, int y)
         {
             this.pos = new Vector2(x, y);
-        }
-
-        public Button(int x, int y, Texture2D state1, Texture2D state2)
-        {
-            this.pos = new Vector2(x, y);
-            this.texture = state1;
-            this.w = state1.Width;
-            this.h = state1.Height;
-            this.texture_state1 = state1;
-            this.texture_state2 = state2;
         }
 
         public Button(int x, int y, int w, int h, Texture2D state1, Texture2D state2, BuildingTypeEnum bType)
@@ -58,13 +48,6 @@ namespace Settlers
             this.h = h;
             this.texture_state1 = state1;
             this.texture_state2 = state2;
-        }
-
-        public Button(int x, int y, int w, int h)
-        {
-            this.pos = new Vector2(x, y);
-            this.w = w;
-            this.h = h;
         }
 
         public void Init(Texture2D texture)
