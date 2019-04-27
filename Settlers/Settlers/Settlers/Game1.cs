@@ -16,30 +16,30 @@ namespace Settlers
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         #region Változók
-        private GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;
-        private Dictionary<string, Texture2D> Textures = new Dictionary<string, Texture2D>();
-        private List<Button> GameMenuButtons = new List<Button>();
-        private MouseState ms = new MouseState();
-        private MouseState prevMS = new MouseState();
-        private KeyboardState ks = new KeyboardState();
-        private KeyboardState prevKs = new KeyboardState();
-        private GameState gs = new GameState();
-        private List<Building> buildings = new List<Building>();
-        private Dictionary<string, SpriteFont> fonts = new Dictionary<string, SpriteFont>();
-        private List<Output> outputs = new List<Output>();
-        private int actualWorkers = Globals.STARTWORKERS;
-        private int allWorkers = Globals.STARTWORKERS;
-        Dictionary<BaseMaterial, int> basematerials = new Dictionary<BaseMaterial, int>();
-        private int yOutput = 410;
-        Texture2D background;
-        private bool errorOrNot;
-        private bool cannotLoad = false;
-        private bool wantToContinue = false;
-        private bool colorized = false;
+        private GraphicsDeviceManager graphics; // Form kirajzolásához szükséges
+        private SpriteBatch spriteBatch; // Kirajzoláshoz szükség változó
+        private Dictionary<string, Texture2D> Textures = new Dictionary<string, Texture2D>(); //Játék textúráit tárolja
+        private List<Button> GameMenuButtons = new List<Button>();  //Épület elhelyezéséhez szükséges gombok
+        private MouseState ms = new MouseState(); //Egér jelenlegi állapotát tárolja
+        private MouseState prevMS = new MouseState(); //Egér utolsó állapotát tárolja
+        private KeyboardState ks = new KeyboardState(); //Lenyomott gombot tárolja
+        private KeyboardState prevKs = new KeyboardState(); // Az utolsó lenyomott gombot tárolja
+        private GameState gs = new GameState(); // A játék állását tárolja
+        private List<Building> buildings = new List<Building>(); // Lehelyezett épületeket tárolja
+        private Dictionary<string, SpriteFont> fonts = new Dictionary<string, SpriteFont>(); // Az összes felhasználható fontot tárolja
+        private List<Output> outputs = new List<Output>(); //Az összes szöveg, ami játékban található
+        private int actualWorkers = Globals.STARTWORKERS; //A "munkanélküli" munkások száma
+        private int allWorkers = Globals.STARTWORKERS; //Az összes elérhetõ munkás száma
+        Dictionary<BaseMaterial, int> basematerials = new Dictionary<BaseMaterial, int>(); //Nyersanyagokat és a mennyiségüket tárolja
+        private int yOutput = 410; // Játékon belüli szövegekhez lévõ segéd változó
+        Texture2D background; // A menûk háttérképe
+        private bool errorOrNot; // Van-e hiba a játék betöltésekor
+        private bool cannotLoad = false; // Betudja-e tölteni a mentést
+        private bool wantToContinue = false; // Játékos teljesitette a célt, akarja-e folytatni
+        private bool colorized = false; // Az épület termelési területe, ki van a rajzolva 
 
-        Map map;
-        private MySqlConnectionHandler connector;
+        Map map; // Pályát tárolja
+        private MySqlConnectionHandler connector; // Adatbázis kapcsolat, ezen keresztül érjük el az adatbázist
         #endregion
         #region Menu gombok
         Button startButton;
@@ -58,11 +58,17 @@ namespace Settlers
         Button endContinueButton;
         #endregion
 
+        /// <summary>
+        /// A játék elinditásához szükséges változók
+        /// Felveszi az adatbázis kapcsolatot
+        /// Betölti a Content mappát
+        /// Kirajzolja a Formot
+        /// Megjeleniti az egeret
+        /// </summary>
         public Game1()
         {
             connector = new MySqlConnectionHandler();
             errorOrNot = connector.TryOpen();
-            
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 1100;
@@ -70,13 +76,19 @@ namespace Settlers
             graphics.ApplyChanges();
             this.IsMouseVisible = true;
         }
-
+        /// <summary>
+        /// Megadjuk, hogy a játék elindulásakor a menü induljon el
+        /// </summary>
         protected override void Initialize()
         {
             gs = GameState.Menu;
             base.Initialize();
         }
-
+        /// <summary>
+        /// Betölti az összes Texturát, amit a játékon belül felhasználunk
+        /// Fontokat, szövegeket
+        /// Végre hajt, egy ellenõrzést, hogy ha nem jött létre adatbázis kapcsolat ne töltse be az elemeket!
+        /// </summary>
         protected override void LoadContent()
         {
             Directory.GetFiles("Content/Fonts", "*.xnb", SearchOption.AllDirectories).ToList().ForEach(x => fonts.Add(Path.GetFileNameWithoutExtension(x), Content.Load<SpriteFont>(Path.Combine(Path.GetDirectoryName(x).Substring(8), Path.GetFileNameWithoutExtension(x)))));
@@ -124,14 +136,20 @@ namespace Settlers
                 outputs.Add(new Output("error", $"Error message:\n Cannot create the connection!\n Please reinstall the game!", new Vector2(150, 100), Color.Yellow, fonts["Errorfont"], true));
 
             }
-            
+
         }
 
         protected override void UnloadContent()
         {
-           
+
         }
 
+        /// <summary>
+        /// Az Update metodusban fut maga a játék, minden amit a felhasználó csinál a futás alatt azt itt dolgozza fel
+        /// IsActive segitségével tudjuk, hogy a felhasználó épp a programmal foglalkozik, vagy épp egy másik ablak van-e megnyitva
+        /// Több részre van felosztva, a szerint hogy a játék éppen melyik játék állásban van!
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Update(GameTime gameTime)
         {
             if (IsActive)
@@ -180,7 +198,7 @@ namespace Settlers
                             basematerials = connector.GetSavedMaterial();
                             gs = GameState.Playing;
 
-                            
+
                         }
                         else
                         {
@@ -254,7 +272,6 @@ namespace Settlers
                         }
                     }
                     #endregion
-                    this.map.Update(ms, prevMS, GameMenuButtons, Textures);
                     #region Épület mozgatás
                     if (this.buildings.Count() != 0)
                     {
@@ -280,7 +297,7 @@ namespace Settlers
                             {
                                 colorized = false;
                                 buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing).ColorizeProductionArea(colorized, map, spriteBatch);
-                                 move.MoveBuilding(Direction.Right);
+                                move.MoveBuilding(Direction.Right);
                             }
                             if (ks.IsKeyDown(Keys.A) && map.CheckTile(Direction.Left, move.Step(Direction.Left)))
                             {
@@ -299,17 +316,17 @@ namespace Settlers
                                         buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing).ProductionSum(map);
 
                                     buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing).Status = BuildingStatus.Construction;
-                                    
+
                                 }
                             }
-                            if(ks.IsKeyDown(Keys.R))
+                            if (ks.IsKeyDown(Keys.R))
                             {
                                 colorized = true;
                                 buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing).ColorizeProductionArea(colorized, map, spriteBatch);
                             }
-                            if(ks.IsKeyDown(Keys.Delete))
+                            if (ks.IsKeyDown(Keys.Delete))
                             {
-                                Building removeBuilding =  buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing);
+                                Building removeBuilding = buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing);
                                 bMID = connector.GetBuildingTypeCreate(removeBuilding.BuildingType);
                                 buildings.Remove(removeBuilding);
                                 BaseMaterial wood = basematerials.FirstOrDefault(x => x.Key.Name == "Wood").Key;
@@ -441,17 +458,17 @@ namespace Settlers
                     if (saveButton.MouseOver(ms)) { saveButton.ChangeState(2); } else { saveButton.ChangeState(1); }
                     if (exitButton.MouseOver(ms)) { exitButton.ChangeState(2); } else { exitButton.ChangeState(1); }
                 }
-                else if (gs== GameState.BeforePlaying)
+                else if (gs == GameState.BeforePlaying)
                 {
 
-                    if (beforeStartButton.LeftClick(ms,prevMS))
+                    if (beforeStartButton.LeftClick(ms, prevMS))
                     {
                         gs = GameState.Playing;
                         this.map = new Map();
                         this.map.InitTiles(Textures["grass"], Textures["tree"], Textures["stone"], Textures["buildingmenu"]);
                         this.GameMenuButtons = this.map.InitInGameMenu(Textures);
                     }
-                    if(beforeExitButton.LeftClick(ms,prevMS))
+                    if (beforeExitButton.LeftClick(ms, prevMS))
                     {
                         gs = GameState.Menu;
                     }
@@ -477,6 +494,12 @@ namespace Settlers
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Itt történik minden elem kirajzolása a képernyõre, szintén a játék állástól függöen
+        /// Itt rajzoljuk ki a gombokat, hátteret, szövegeket, a pályát és az épületeket
+        /// Draw metódus szintén meghivja magát minden lefutás után
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
@@ -514,7 +537,7 @@ namespace Settlers
                         x.Draw(spriteBatch);
                     }
                 });
-                
+
             }
             if (gs == GameState.Pause)
             {
@@ -524,12 +547,12 @@ namespace Settlers
                 saveButton.Draw(spriteBatch);
                 exitButton.Draw(spriteBatch);
             }
-            if (gs==GameState.Error)
+            if (gs == GameState.Error)
             {
-                spriteBatch.Draw(new Texture2D(GraphicsDevice,400,400), new Vector2(0, 0), Color.Multiply(Color.White,100));
+                spriteBatch.Draw(new Texture2D(GraphicsDevice, 400, 400), new Vector2(0, 0), Color.Multiply(Color.White, 100));
                 this.outputs.FirstOrDefault(x => x.Name == "error").Draw(spriteBatch);
             }
-            if(gs == GameState.BeforePlaying)
+            if (gs == GameState.BeforePlaying)
             {
                 spriteBatch.Draw(background, new Vector2(0, 0), Color.White);
                 beforeStartButton.Draw(spriteBatch);
@@ -543,11 +566,7 @@ namespace Settlers
                 beforeExitButton.Draw(spriteBatch);
                 this.outputs.FirstOrDefault(x => x.Name == "ending").Draw(spriteBatch);
             }
-
-
             spriteBatch.End();
-
-
             base.Draw(gameTime);
         }
     }

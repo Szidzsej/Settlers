@@ -7,15 +7,18 @@ using System.Text;
 
 namespace Settlers
 {
+    /// <summary>
+    /// Szövegek definiálása
+    /// </summary>
     class Output
     {
-        public string Name { get; set; }
-        public string Text { get; set; }
-        public Vector2 Position { get; set; }
-        public Vector2 Origin { get; set; }
-        public Color Color { get; set; }
-        public SpriteFont FontStyle { get; set; }
-        public bool IsItWorker { get; set; }
+        public string Name { get; set; } // Szöveg neve
+        public string Text { get; set; } // Szöveg tartalma
+        public Vector2 Position { get; set; } // Szöveg poziciója
+        public Vector2 Origin { get; set; } // Szöveg középpontja
+        public Color Color { get; set; } // Szöveg színe
+        public SpriteFont FontStyle { get; set; } // Szöveg betű típusa
+        public bool IsItWorker { get; set; } // Szöveg a munkások számát írja-e ki
 
         public Output(string iName, string iText,  Vector2 iPosition, Color iColor, SpriteFont iFontStyle,bool worker)
         {
@@ -25,12 +28,22 @@ namespace Settlers
             this.Color = iColor;
             this.FontStyle = iFontStyle;
             this.IsItWorker = worker;
-            //this.Origin = FontStyle.MeasureString(Text) / 2;
         }
+        /// <summary>
+        /// Szöveg kirajzolása
+        /// </summary>
+        /// <param name="sprite"></param>
         public void Draw(SpriteBatch sprite)
         {
             sprite.DrawString(this.FontStyle, this.Text, this.Position, this.Color,0, new Vector2(0,0), 1.0f, SpriteEffects.None, 0.5f);
         }
+        /// <summary>
+        /// SZövegek frissítése
+        /// </summary>
+        /// <param name="bM">Nyersanyag</param>
+        /// <param name="value"> Nyersanyag mennyiség</param>
+        /// <param name="actualWorkers"> Elérhető munkások száma</param>
+        /// <param name="allWorkers"> Az összes munkás száma</param>
         public void Update(BaseMaterial bM, int value,int actualWorkers, int allWorkers)
         {
             if (IsItWorker)

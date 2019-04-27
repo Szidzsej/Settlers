@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 
 namespace Settlers
-{
-    public enum GameState
+{   
+    /// <summary>
+    /// Játék állapotok
+    /// </summary>
+    public enum GameState 
     {
         Menu = 0,
         Playing = 1,
@@ -15,6 +18,9 @@ namespace Settlers
         BeforePlaying = 5,
         EndGame = 6
     }
+    /// <summary>
+    /// Irányok
+    /// </summary>
     public enum Direction
     {
         Up = 0,
@@ -22,6 +28,9 @@ namespace Settlers
         Down = 2,
         Left = 3
     }
+    /// <summary>
+    /// Mező állapotok
+    /// </summary>
     public enum TileState
     {
         Grass = 0,
@@ -30,12 +39,18 @@ namespace Settlers
         Menu = 3,
         Building = 4
     }
+    /// <summary>
+    /// Épület állapotok
+    /// </summary>
     public enum BuildingStatus
     {
         Placing = 0,
         Construction = 1,
         Ready = 2
     }
+    /// <summary>
+    /// Épület tipusok
+    /// </summary>
     public enum BuildingTypeEnum
     {
         House = 7,

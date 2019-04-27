@@ -9,10 +9,13 @@ using System.Text;
 
 namespace Settlers
 {
+    /// <summary>
+    /// Definálja a pályát
+    /// </summary>
     public class Map
     {
-        public List<Tile> Tiles { get; set; }
-        public List<Button> BuildingButtons;
+        public List<Tile> Tiles { get; set; } //Pálya mezői
+        public List<Button> BuildingButtons; //Épület menű gombjai
         #region Koordináta segéd változók
         Random random = new Random();
         int yCoor = 0;
@@ -34,6 +37,10 @@ namespace Settlers
             this.BuildingButtons = new List<Button>();
 
         }
+        /// <summary>
+        /// Üres pálya beolvasása fájlból és a pálya elkészítése
+        /// </summary>
+        /// <returns>Vissza adja a pályát egy mátrixban a tereptárgyakkal együtt</returns>
         private int[,] MapCreator()
         {
             if (File.Exists("Maps/nullMap.txt"))
@@ -61,6 +68,11 @@ namespace Settlers
             }
             return null;
         }
+        /// <summary>
+        /// Fák elhelyezése a pályán
+        /// </summary>
+        /// <param name="map">Pálya mátrixa</param>
+        /// <returns>Fák helyzette a mátrixban</returns>
         private int[,] TreeSpawner(int[,] map)
         {
             yCoor = random.Next(5, Globals.TILEROWCOUNT - 5);
@@ -96,6 +108,11 @@ namespace Settlers
             }
             return map;
         }
+        /// <summary>
+        /// Kövek elhelyezése a pályán
+        /// </summary>
+        /// <param name="map">Pálya mátrixa</param>
+        /// <returns>Kövek helyzete a mátrixban</returns>
         private int[,] StoneSpawner(int[,] map)
         {
             yCoor = random.Next(5, Globals.TILEROWCOUNT - 5);
@@ -131,6 +148,13 @@ namespace Settlers
             }
             return map;
         }
+        /// <summary>
+        /// Pálya mezőinek a felvétele
+        /// </summary>
+        /// <param name="grass">Fű textúrája</param>
+        /// <param name="tree">Fa textúrája</param>
+        /// <param name="stone">Kő textúrája</param>
+        /// <param name="buildingMenu">A menű textúrája</param>
         public void InitTiles(Texture2D grass, Texture2D tree, Texture2D stone,Texture2D buildingMenu)
         {
             int[,] a = MapCreator();
@@ -147,7 +171,13 @@ namespace Settlers
             Tiles.Add(new Tile(new Rectangle(xMapEnd + Globals.TILESIZE, 0, 200, 600), buildingMenu, TileState.Menu, Color.White));
 
         }
-
+        /// <summary>
+        /// Mező ellenőrzése az állapota alapján
+        /// Lépésnél ellenrőzi szabad a következő 4 mező ahová szeretnénk átlépni
+        /// </summary>
+        /// <param name="iDirection">A lépés iránya</param>
+        /// <param name="a">A kezdeti pozició</param>
+        /// <returns>Léphet-e oda vagy sem</returns>
         public bool CheckTile(Direction iDirection, Rectangle a)
         {
             List<Tile> tileHelp = this.Tiles.FindAll(x => ((x.Rectangle.X == a.X) && (x.Rectangle.Y == a.Y)) || (((a.X + Globals.TILESIZE) == x.Rectangle.X) && a.Y == x.Rectangle.Y)
@@ -160,7 +190,14 @@ namespace Settlers
 
             return false;
         }
-
+        /// <summary>
+        /// Az adatbázisban lementett mezők felvétele és textúráinak átadása
+        /// </summary>
+        /// <param name="grass">Fű textúrája</param>
+        /// <param name="tree">Fa textúrája</param>
+        /// <param name="stone">Kő textúrája</param>
+        /// <param name="buildingMenu">Menű textúrája</param>
+        /// <returns>Vissza adja a mezőket</returns>
         public List<Tile> InitLoadedTiles(Texture2D grass, Texture2D tree, Texture2D stone, Texture2D buildingMenu)
         {
             foreach (var tile in Tiles)
@@ -191,7 +228,11 @@ namespace Settlers
             Tiles.Add(new Tile(new Rectangle(xMapEnd + Globals.TILESIZE, 0, 200, 600), buildingMenu, TileState.Menu,Color.White));
             return this.Tiles;
         }
-
+        /// <summary>
+        /// Épület lehelyezése a pályán
+        /// </summary>
+        /// <param name="r">Épület poziciója</param>
+        /// <returns>Vissza adja sikeres volt-e a lehelyezés</returns>
         public bool PlaceBuilding(Rectangle r)
         {
             int xCoorStart = 0;
@@ -220,7 +261,12 @@ namespace Settlers
             }
             return true;
         }
-        public List<Button> InitInGameMenu(Dictionary<string,Texture2D> Textures)
+        /// <summary>
+        /// Menü gombjainak a felvétele és elhelyezése
+        /// </summary>
+        /// <param name="Textures">Gombok textúráia</param>
+        /// <returns>Vissza adja a felvett gombokat</returns>
+        public List<Button> InitInGameMenu(Dictionary<string, Texture2D> Textures)
         {
             int yHelper = 60;
             int countHelper = 1;
@@ -232,8 +278,8 @@ namespace Settlers
                     s = item.Key.Substring(6);
                     if (countHelper % 2 == 1)
                     {
-                        
-                        BuildingButtons.Add(new Button((xMapEnd + (Globals.MENUICON + 80)), yHelper, Globals.MENUICON, Globals.MENUICON,Textures[s], item.Value, GetGameMenuBuildingType(s)));
+
+                        BuildingButtons.Add(new Button((xMapEnd + (Globals.MENUICON + 80)), yHelper, Globals.MENUICON, Globals.MENUICON, Textures[s], item.Value, GetGameMenuBuildingType(s)));
                     }
                     else
                     {
@@ -241,11 +287,16 @@ namespace Settlers
                         yHelper += 90;
                     }
                     countHelper++;
-                }   
-                
+                }
+
             }
             return BuildingButtons;
         }
+        /// <summary>
+        /// Épületek tipusinak a neve szöveges formátumból át konvertálása enummá
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
         private BuildingTypeEnum GetGameMenuBuildingType(string s)
         {
             BuildingTypeEnum type;
@@ -263,12 +314,10 @@ namespace Settlers
             }
             return type;
         }
-
-        public void Update(MouseState ms,MouseState prevMS, List<Button> GameMenuButtons, Dictionary<string,Texture2D> Textures)
-        {
-                   
-        }
-
+        /// <summary>
+        /// Pálya kirajzolása a képernyőre
+        /// </summary>
+        /// <param name="sprite">Kirajzoláshoz szükséges változó</param>
         public void Draw(SpriteBatch sprite)
         {
             this.Tiles.ForEach(x =>

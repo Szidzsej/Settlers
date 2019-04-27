@@ -7,12 +7,15 @@ using System.Text;
 
 namespace Settlers
 {
+    /// <summary>
+    /// Mező definiálása
+    /// </summary>
     public class Tile
     {
-        public Rectangle Rectangle { get; set; }
-        public Texture2D Texture { get; set; }
-        public TileState State { get; set; }
-        public Color TileColor { get; set; }
+        public Rectangle Rectangle { get; set; } //Mező poziciója
+        public Texture2D Texture { get; set; } //Mező textúrája
+        public TileState State { get; set; } //Mező állapotát
+        public Color TileColor { get; set; } //Mező árnyalata
 
         public Tile(Rectangle iRectangle, Texture2D ITexture, TileState iState,Color iTileColor)
         {
@@ -27,7 +30,10 @@ namespace Settlers
             this.State = iState;
             this.TileColor = iTileColor;
         }
-
+        /// <summary>
+        /// Mező kirajzolása
+        /// </summary>
+        /// <param name="sprite">Kirajzoláshoz szükséges változó</param>
         public void Draw(SpriteBatch sprite)
         {
             sprite.Draw(this.Texture, this.Rectangle, TileColor);

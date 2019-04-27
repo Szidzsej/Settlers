@@ -5,10 +5,13 @@ using System.Text;
 
 namespace Settlers
 {
+    /// <summary>
+    /// Munkások definiálása
+    /// </summary>
     public class Worker
     {
-        public int ID { get; set; }
-        public string Name { get; set; }
+        public int ID { get; set; } // Munkás azonosítója
+        public string Name { get; set; } // Munkás neve
 
         public Worker(int id, string name)
         {

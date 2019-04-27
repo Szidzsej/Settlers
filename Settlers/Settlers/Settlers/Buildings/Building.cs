@@ -9,21 +9,21 @@ namespace Settlers
 {
     public class Building 
     {
-        public int ID { get; set; }
-        public BuildingTypeEnum BuildingType { get; set; }
-        public Rectangle Rectangle { get; set; }
-        public Texture2D Texture { get; set; }
-        public Rectangle Bounds { get; set; }
-        public BuildingStatus Status { get; set; }
-        public bool HasWorker { get; set; }
-        public Production Production { get; set; }
-        public bool IsItEmpty { get; set; }
-        public int WoodStoneCount { get; set; }
+        public int ID { get; set; } // Épület azonositoja
+        public BuildingTypeEnum BuildingType { get; set; } // Épület Tipusa
+        public Rectangle Rectangle { get; set; } // Épület kirajzolásához szükséges kooridnátákat és méreteket tárolja
+        public Texture2D Texture { get; set; } // Épület textúrája
+        public Rectangle Bounds { get; set; } // Lehelyezett épület pontos helye a pályán
+        public BuildingStatus Status { get; set; } // Épület státusza pl. Épités alatt
+        public bool HasWorker { get; set; } // Dolgozik-e valaki az épületben
+        public Production Production { get; set; } // Épület termelését tárolja 
+        public bool IsItEmpty { get; set; } // Üres-e a lakóház
+        public int WoodStoneCount { get; set; } // Az épület körzetében lévő fa vagy kő mennyisége
 
-        public int BuildTime { get; set; }
-        public Rectangle NextStep { get; set; }
-        public bool IsMoving { get; set; }
-        public Vector2 Origin;
+        public int BuildTime { get; set; } // Az idő mig felépül az épület
+        public Rectangle NextStep { get; set; } // Az következő lépés, mozgatás sorám
+        public bool IsMoving { get; set; } // Mozog-e az épület
+        public Vector2 Origin; // Épület középpontja
 
         public Building(int id, Rectangle iRectangle, Texture2D ITexture, BuildingStatus iStatus, BuildingTypeEnum bTID, bool iHasWorker)
         {
@@ -59,6 +59,12 @@ namespace Settlers
             this.IsItEmpty = false;
             this.WoodStoneCount = 0;
         }
+
+        /// <summary>
+        /// Az épület körzetét adja vissza 
+        /// </summary>
+        /// <param name="map">Pálya</param>
+        /// <returns></returns>
         private List<Tile> BuildingsArea(Map map)
         {
             List<Tile> temp = new List<Tile>();
@@ -87,6 +93,14 @@ namespace Settlers
             }
             return temp;
         }
+
+        /// <summary>
+        /// Kiszinezi az épület körzetét, hogy látható legyen hány fa/kő van a közelben
+        /// </summary>
+        /// <param name="colorized">Jelenleg kivan-e szinezve</param>
+        /// <param name="map">Pálya</param>
+        /// <param name="sprite">Kirajzoláshoz szükséges változó</param>
+        /// <returns>Vissza a mezőket a közelben</returns>
         public List<Tile> ColorizeProductionArea(bool colorized, Map map,SpriteBatch sprite)
         {
             List<Tile> colorizedTiles = BuildingsArea(map);
@@ -104,6 +118,10 @@ namespace Settlers
             }
             return colorizedTiles;
         }
+        /// <summary>
+        /// Kiszámolja hány fa/kő van a közelben
+        /// </summary>
+        /// <param name="map">Pálya</param>
         public void ProductionSum(Map map)
         {
             List<Tile> temp = BuildingsArea(map);
@@ -130,6 +148,10 @@ namespace Settlers
             else
                 this.WoodStoneCount = 0;
         }
+        /// <summary>
+        /// Épület kirajzolása
+        /// </summary>
+        /// <param name="sprite">Kirajzoláshoz szükséges változó</param>
         public void Draw(SpriteBatch sprite)
         {
             if (this.Status == BuildingStatus.Construction)
@@ -148,7 +170,9 @@ namespace Settlers
                 }
             }
         }
-        
+        /// <summary>
+        /// Épület frissitése
+        /// </summary>
         public void Update()
         {
             if (this.IsMoving && this.Status == BuildingStatus.Placing)
@@ -182,6 +206,10 @@ namespace Settlers
                     this.IsMoving = false;
             }
         }
+        /// <summary>
+        /// Épület állapotának megvizsgálása, felépült-e
+        /// </summary>
+        /// <param name="ms">Eltelt idő</param>
         public void UpdateBuidlingStatus(int ms)
         {
             BuildTime += ms;
@@ -191,6 +219,10 @@ namespace Settlers
                
             }
         }
+        /// <summary>
+        /// Ha még nincs az épületnek munkása, megvizsgálja van-e elérhető szabad munkás, ha van hozzá füzi az épülethez
+        /// </summary>
+        /// <param name="workers">Összes szabad munkás száma</param>
         public void UpdateWorkerStatus(int workers)
         {
             if (workers > 0  && this.BuildingType != BuildingTypeEnum.House)
@@ -199,11 +231,19 @@ namespace Settlers
             }
         }
 
+        /// <summary>
+        /// Épület mozgatása
+        /// </summary>
+        /// <param name="iDirection">Milyen irányba mozog</param>
         public void Move(Direction iDirection)
         {
             this.Bounds = Step(iDirection);
         }
 
+        /// <summary>
+        /// Az épület mozgásának az animációja
+        /// </summary>
+        /// <param name="iDirection">Melyik irányba mozog</param>
         public void AnimatedUpdate(Direction iDirection)
         {
             if (!this.IsMoving)
@@ -213,11 +253,21 @@ namespace Settlers
             }
             var a = Step(iDirection);
         }
+
+        /// <summary>
+        /// Az épület tényleges mozgatása, mikor már le lett vizsgálva tud-e az adott irányba mozogni
+        /// </summary>
+        /// <param name="iDirection">Melyik irányba mozog</param>
         public void MoveBuilding(Direction iDirection)
         {
             AnimatedUpdate(iDirection);
         }
 
+        /// <summary>
+        /// A kövezkező lépés definiálása
+        /// </summary>
+        /// <param name="iDirection">Melyik irányba mozog</param>
+        /// <returns>Vissza adja a lépés helyének, koordinátáját</returns>
         public Rectangle Step(Direction iDirection)
         {
             switch (iDirection)
@@ -243,6 +293,11 @@ namespace Settlers
             }
         }
 
+        /// <summary>
+        /// Az épület tipusának az konvertálása, szöveggé
+        /// </summary>
+        /// <param name="bTID">Az épület tipusának azonositója</param>
+        /// <returns>Vissza adja az épület tipusát szövegként</returns>
         public string GetTextureName(BuildingTypeEnum bTID)
         {
             string s = "";

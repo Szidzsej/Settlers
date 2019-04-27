@@ -7,16 +7,23 @@ namespace Settlers
 {
     public class Production
     {
-        public BaseMaterial ReadyMaterial { get; set; }
-        public Dictionary<BaseMaterial, int> BaseMaterials { get; set; }
+        public BaseMaterial ReadyMaterial { get; set; } // Az épület által termelt nyersanyag
+        public Dictionary<BaseMaterial, int> BaseMaterials { get; set; } // A termeléshez szükséges nyersanyagokat tárolja
 
-        public int CreateTime { get; set; }
+        public int CreateTime { get; set; } // Termelések között eltelt idő
         public Production()
         {
             CreateTime = 0;
             this.ReadyMaterial = new BaseMaterial();
             this.BaseMaterials = new Dictionary<BaseMaterial, int>();
         }
+
+        /// <summary>
+        /// A termelést végző metódus
+        /// </summary>
+        /// <param name="building">Az adott épület, amelyikena termelés folyik </param>
+        /// <param name="baseMaterials">Az összes nyersanyagot tároló változó</param>
+        /// <param name="ms">2 update között eltelt idő</param>
         public void Update(Building building, Dictionary<BaseMaterial, int> baseMaterials, int ms)
         {
             CreateTime += ms;
@@ -93,12 +100,25 @@ namespace Settlers
                 }
             }
         }
+
+        /// <summary>
+        /// A lakóház felépülésekor, kapunk plusz 5 munkás, ekkor a ház üressé válik
+        /// </summary>
+        /// <param name="b">Az adott lakóház, amely felépült</param>
+        /// <param name="allWorkers">Az eddigi összes munkás száma</param>
+        /// <returns>Vissza adja az összes munkás számát az új "lakókkal" együtt</returns>
         public int HouseUpdate(Building b, int allWorkers)
         {
             b.IsItEmpty = true;
             return allWorkers + Globals.WORKERSPERHOUSE;
 
         }
+        /// <summary>
+        /// Metódus egy ciklushoz, hogy az átláthatóbb legyen
+        /// </summary>
+        /// <param name="baseMaterials"></param>
+        /// <param name="bm"></param>
+        /// <param name="quantity"></param>
         public void Loop(Dictionary<BaseMaterial,int> baseMaterials, BaseMaterial bm, int quantity)
         {
             foreach (var item in baseMaterials)

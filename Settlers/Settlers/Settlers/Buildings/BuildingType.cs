@@ -2,10 +2,10 @@
 {
     public class BuildingType
     {
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public int TypeID { get; set; }
-        public string Image { get; set; }
+        public int ID { get; set; } // Épület tipusának azonositója
+        public string Name { get; set; } // épület tipusának a neve
+        public int TypeID { get; set; } // Tipus azonositója az adatbázisban
+        public string Image { get; set; } // Az épület tipusnak a textúrájának a neve
 
         public BuildingType(int id, string name,int typeID)
         {
