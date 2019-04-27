@@ -297,7 +297,7 @@ namespace Settlers
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        private BuildingTypeEnum GetGameMenuBuildingType(string s)
+        public BuildingTypeEnum GetGameMenuBuildingType(string s)
         {
             BuildingTypeEnum type;
             switch (s)

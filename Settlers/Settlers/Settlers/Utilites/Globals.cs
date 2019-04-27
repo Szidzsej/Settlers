@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Settlers
 {
-    static class Globals
+    public static class Globals
     {
         /// <summary>
         /// Mezők mérete

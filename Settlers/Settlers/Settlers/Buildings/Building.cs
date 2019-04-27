@@ -7,6 +7,9 @@ using System.Text;
 
 namespace Settlers
 {
+    /// <summary>
+    /// Az épületet definiálja
+    /// </summary>
     public class Building 
     {
         public int ID { get; set; } // Épület azonositoja

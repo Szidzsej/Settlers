@@ -5,20 +5,37 @@ VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Settlers", "Settlers\Settlers\Settlers.csproj", "{15EBB3F2-F5BC-4DED-9BD4-281B5788ACAE}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "SettlersContent", "Settlers\SettlersContent\SettlersContent.contentproj", "{78BEEE39-D2FF-4F4C-9165-4A157E2B1CFB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettlersContent", "Settlers\SettlersContent\SettlersContent.contentproj", "{78BEEE39-D2FF-4F4C-9165-4A157E2B1CFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestSettlers", "UnitTestSettlers\UnitTestSettlers.csproj", "{C10CD5C9-6942-418B-B9CD-C5D9B2897255}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15EBB3F2-F5BC-4DED-9BD4-281B5788ACAE}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{15EBB3F2-F5BC-4DED-9BD4-281B5788ACAE}.Debug|Any CPU.Build.0 = Debug|x86
 		{15EBB3F2-F5BC-4DED-9BD4-281B5788ACAE}.Debug|x86.ActiveCfg = Debug|x86
 		{15EBB3F2-F5BC-4DED-9BD4-281B5788ACAE}.Debug|x86.Build.0 = Debug|x86
+		{15EBB3F2-F5BC-4DED-9BD4-281B5788ACAE}.Release|Any CPU.ActiveCfg = Release|x86
 		{15EBB3F2-F5BC-4DED-9BD4-281B5788ACAE}.Release|x86.ActiveCfg = Release|x86
 		{15EBB3F2-F5BC-4DED-9BD4-281B5788ACAE}.Release|x86.Build.0 = Release|x86
+		{78BEEE39-D2FF-4F4C-9165-4A157E2B1CFB}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{78BEEE39-D2FF-4F4C-9165-4A157E2B1CFB}.Debug|x86.ActiveCfg = Debug|x86
+		{78BEEE39-D2FF-4F4C-9165-4A157E2B1CFB}.Release|Any CPU.ActiveCfg = Release|x86
 		{78BEEE39-D2FF-4F4C-9165-4A157E2B1CFB}.Release|x86.ActiveCfg = Release|x86
+		{C10CD5C9-6942-418B-B9CD-C5D9B2897255}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{C10CD5C9-6942-418B-B9CD-C5D9B2897255}.Debug|Any CPU.Build.0 = Debug|x86
+		{C10CD5C9-6942-418B-B9CD-C5D9B2897255}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C10CD5C9-6942-418B-B9CD-C5D9B2897255}.Debug|x86.Build.0 = Debug|Any CPU
+		{C10CD5C9-6942-418B-B9CD-C5D9B2897255}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C10CD5C9-6942-418B-B9CD-C5D9B2897255}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C10CD5C9-6942-418B-B9CD-C5D9B2897255}.Release|x86.ActiveCfg = Release|Any CPU
+		{C10CD5C9-6942-418B-B9CD-C5D9B2897255}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
