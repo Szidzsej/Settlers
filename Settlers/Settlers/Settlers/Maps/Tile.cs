@@ -17,18 +17,18 @@ namespace Settlers
         public TileState State { get; set; } //Mező állapotát
         public Color TileColor { get; set; } //Mező árnyalata
 
-        public Tile(Rectangle iRectangle, Texture2D ITexture, TileState iState,Color iTileColor)
+        public Tile(Rectangle Rectangle, Texture2D Texture, TileState State,Color TileColor)
         {
-            this.Rectangle = iRectangle;
-            this.Texture = ITexture;
-            this.State = iState;
-            this.TileColor = iTileColor;
+            this.Rectangle = Rectangle;
+            this.Texture = Texture;
+            this.State = State;
+            this.TileColor = TileColor;
         }
-        public Tile(Rectangle iRectangle, TileState iState, Color iTileColor)
+        public Tile(Rectangle Rectangle, TileState State, Color TileColor)
         {
-            this.Rectangle = iRectangle;
-            this.State = iState;
-            this.TileColor = iTileColor;
+            this.Rectangle = Rectangle;
+            this.State =State;
+            this.TileColor = TileColor;
         }
         /// <summary>
         /// Mező kirajzolása

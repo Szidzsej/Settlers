@@ -13,11 +13,11 @@
             this.Name = name;
             this.TypeID = typeID;
         }
-        public BuildingType(string name, int typeID, string iImage)
+        public BuildingType(string name, int typeID, string image)
         {
             this.Name = name;
             this.TypeID = typeID;
-            this.Image = iImage;
+            this.Image = image;
         }
     }
 }

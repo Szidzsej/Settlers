@@ -30,32 +30,33 @@ namespace Settlers
         private List<Output> outputs = new List<Output>(); //Az összes szöveg, ami játékban található
         private int actualWorkers = Globals.STARTWORKERS; //A "munkanélküli" munkások száma
         private int allWorkers = Globals.STARTWORKERS; //Az összes elérhetõ munkás száma
-        Dictionary<BaseMaterial, int> basematerials = new Dictionary<BaseMaterial, int>(); //Nyersanyagokat és a mennyiségüket tárolja
+        private Dictionary<BaseMaterial, int> basematerials = new Dictionary<BaseMaterial, int>(); //Nyersanyagokat és a mennyiségüket tárolja
         private int yOutput = 410; // Játékon belüli szövegekhez lévõ segéd változó
-        Texture2D background; // A menûk háttérképe
+        private Texture2D background; // A menûk háttérképe
         private bool errorOrNot; // Van-e hiba a játék betöltésekor
         private bool cannotLoad = false; // Betudja-e tölteni a mentést
         private bool wantToContinue = false; // Játékos teljesitette a célt, akarja-e folytatni
-        private bool colorized = false; // Az épület termelési területe, ki van a rajzolva 
+        private bool anyButtonPressed = true;
+        private int radiusTime = 1000;
 
         Map map; // Pályát tárolja
         private MySqlConnectionHandler connector; // Adatbázis kapcsolat, ezen keresztül érjük el az adatbázist
         #endregion
-        #region Menu gombok
-        Button startButton;
-        Button exitButton;
-        Button loadButton;
+        #region Menü gombok
+        private Button startButton;
+        private Button exitButton;
+        private Button loadButton;
         #endregion
 
         #region Szünet gombok
-        Button continueButton;
-        Button saveButton;
+        private Button continueButton;
+        private Button saveButton;
         #endregion
 
         #region Játék elötti és Játék végén lévõ gombok
-        Button beforeStartButton;
-        Button beforeExitButton;
-        Button endContinueButton;
+        private Button beforeStartButton;
+        private Button beforeExitButton;
+        private Button endContinueButton;
         #endregion
 
         /// <summary>
@@ -67,14 +68,21 @@ namespace Settlers
         /// </summary>
         public Game1()
         {
-            connector = new MySqlConnectionHandler();
-            errorOrNot = connector.TryOpen();
-            graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
-            graphics.PreferredBackBufferWidth = 1100;
-            graphics.PreferredBackBufferHeight = 600;
-            graphics.ApplyChanges();
-            this.IsMouseVisible = true;
+            try
+            {
+                connector = new MySqlConnectionHandler();
+                errorOrNot = connector.TryOpen();
+                graphics = new GraphicsDeviceManager(this);
+                Content.RootDirectory = "Content";
+                graphics.PreferredBackBufferWidth = 1100;
+                graphics.PreferredBackBufferHeight = 600;
+                graphics.ApplyChanges();
+                this.IsMouseVisible = true;
+            }
+            catch
+            {
+                errorOrNot = false;
+            }
         }
         /// <summary>
         /// Megadjuk, hogy a játék elindulásakor a menü induljon el
@@ -197,8 +205,6 @@ namespace Settlers
 
                             basematerials = connector.GetSavedMaterial();
                             gs = GameState.Playing;
-
-
                         }
                         else
                         {
@@ -213,13 +219,13 @@ namespace Settlers
                 else if (gs == GameState.Playing)
                 {
                     #region Épület létrehozás
-                    string[] s = null;
+                    string[] stringArrayHelper = null;
                     int[] bMID = null;
                     bool canCreate = false;
                     bool cannotCreate = false;
                     foreach (var item in GameMenuButtons)
                     {
-                        s = Textures.FirstOrDefault(x => x.Value == item.Texture).Key.Split('_');
+                        stringArrayHelper = Textures.FirstOrDefault(x => x.Value == item.Texture).Key.Split('_');
                         if (item.MouseOver(ms)) { item.ChangeState(2); } else { item.ChangeState(1); }
                         if (item.LeftClick(ms, prevMS))
                         {
@@ -254,7 +260,7 @@ namespace Settlers
                                 }
                                 if (!cannotCreate)
                                 {
-                                    Building building = new Building((buildings == null || buildings.Count == 0) ? 1 : buildings.Max(x => x.ID) + 1, new Rectangle(0, 0, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), Textures[s[1]], BuildingStatus.Placing, item.buildingType, false);
+                                    Building building = new Building((buildings == null || buildings.Count == 0) ? 1 : buildings.Max(x => x.ID) + 1, new Rectangle(0, 0, Globals.BUILDINGSIZE, Globals.BUILDINGSIZE), Textures[stringArrayHelper[1]], BuildingStatus.Placing, item.buildingType, false);
                                     building.Production = connector.GetProductions(building);
                                     buildings.Add(building);
                                     BaseMaterial wood = basematerials.FirstOrDefault(x => x.Key.Name == "Wood").Key;
@@ -277,38 +283,27 @@ namespace Settlers
                     {
                         this.buildings.ForEach(x => x.Update());
                         bool canBePlacing = false;
-
                         var move = buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing);
                         if (move != null)
                         {
-                            if (ks.IsKeyDown(Keys.W) && map.CheckTile(Direction.Up, move.Step(Direction.Up)))
+                            if (ks.IsKeyDown(Keys.W) && map.CheckTile(Direction.Up, move.Step(Direction.Up)) && anyButtonPressed && ((radiusTime < 500) || (radiusTime > 1500)))
                             {
-                                colorized = false;
-                                buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing).ColorizeProductionArea(colorized, map, spriteBatch);
                                 move.MoveBuilding(Direction.Up);
                             }
-                            if (ks.IsKeyDown(Keys.S) && map.CheckTile(Direction.Down, move.Step(Direction.Down)))
+                            if (ks.IsKeyDown(Keys.S) && map.CheckTile(Direction.Down, move.Step(Direction.Down)) && anyButtonPressed && ((radiusTime < 500) || (radiusTime > 1500)))
                             {
-                                colorized = false;
-                                buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing).ColorizeProductionArea(colorized, map, spriteBatch);
                                 move.MoveBuilding(Direction.Down);
                             }
-                            if (ks.IsKeyDown(Keys.D) && map.CheckTile(Direction.Right, move.Step(Direction.Right)))
+                            if (ks.IsKeyDown(Keys.D) && map.CheckTile(Direction.Right, move.Step(Direction.Right)) && anyButtonPressed && ((radiusTime < 500) || (radiusTime > 1500)))
                             {
-                                colorized = false;
-                                buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing).ColorizeProductionArea(colorized, map, spriteBatch);
                                 move.MoveBuilding(Direction.Right);
                             }
-                            if (ks.IsKeyDown(Keys.A) && map.CheckTile(Direction.Left, move.Step(Direction.Left)))
+                            if (ks.IsKeyDown(Keys.A) && map.CheckTile(Direction.Left, move.Step(Direction.Left)) && anyButtonPressed && ((radiusTime < 500) || (radiusTime > 1500)))
                             {
-                                colorized = false;
-                                buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing).ColorizeProductionArea(colorized, map, spriteBatch);
                                 move.MoveBuilding(Direction.Left);
                             }
-                            if (ks.IsKeyDown(Keys.Enter))
+                            if (ks.IsKeyDown(Keys.Enter) && anyButtonPressed && ((radiusTime < 500) || (radiusTime > 1500)))
                             {
-                                colorized = false;
-                                buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing).ColorizeProductionArea(colorized, map, spriteBatch);
                                 canBePlacing = map.PlaceBuilding(move.Bounds);
                                 if (canBePlacing)
                                 {
@@ -319,10 +314,21 @@ namespace Settlers
 
                                 }
                             }
-                            if (ks.IsKeyDown(Keys.R))
+                            radiusTime += (int)gameTime.ElapsedGameTime.TotalMilliseconds;
+                            if (ks.IsKeyDown(Keys.R) && radiusTime >= 1000)
                             {
-                                colorized = true;
-                                buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing).ColorizeProductionArea(colorized, map, spriteBatch);
+                                if (anyButtonPressed)
+                                {
+                                    buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing).ColorizeProductionArea(anyButtonPressed, map, spriteBatch);
+                                    anyButtonPressed = false;
+                                    radiusTime = 0;
+                                }
+                                else
+                                {
+                                    buildings.FirstOrDefault(x => x.Status == BuildingStatus.Placing).ColorizeProductionArea(anyButtonPressed, map, spriteBatch);
+                                    anyButtonPressed = true;
+                                    radiusTime = 0;
+                                }
                             }
                             if (ks.IsKeyDown(Keys.Delete))
                             {

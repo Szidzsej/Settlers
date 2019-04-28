@@ -9,7 +9,7 @@ namespace Settlers
 {
     public class MySqlConnectionHandler : IMySqlConnectionHandler
     {
-        MySqlConnection connection;
+        private MySqlConnection connection;
         /// <summary>
         /// Az adatbázis kapcsolat létrehozása
         /// </summary>
@@ -29,7 +29,7 @@ namespace Settlers
         {
             int[] temp = new int[2];
 
-            using (MySqlCommand command = new MySqlCommand("Select EpuletTipusID,AlapanyagID,Mennyiseg From EpuletTipusElkeszites", connection)) 
+            using (MySqlCommand command = new MySqlCommand("SELECT EpuletTipusID,AlapanyagID,Mennyiseg FROM EpuletTipusElkeszites", connection)) 
             {
                 using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
                 {
@@ -56,7 +56,7 @@ namespace Settlers
         /// </summary>
         public void DeleteBuilding()
         {
-            using (MySqlCommand command = new MySqlCommand("DELETE FROM epulet WHere 1",connection))
+            using (MySqlCommand command = new MySqlCommand("DELETE FROM epulet",connection))
             {
                 command.ExecuteNonQuery();
             }
@@ -69,7 +69,7 @@ namespace Settlers
         public void InsertBuilding(Building building)
         {
             string helper = null;
-            using (MySqlCommand command = new MySqlCommand("Insert Into epulet (ID,EpuletTipusID,Koordinata, Statusz) Values(@id,@bTID,@coor,@stat)",connection))
+            using (MySqlCommand command = new MySqlCommand("INSERT INTO epulet (ID,EpuletTipusID,Koordinata, Statusz) VALUES(@id,@bTID,@coor,@stat)",connection))
             {
                 command.Parameters.AddWithValue("@id", building.ID);
                 command.Parameters.AddWithValue("@bTID", (int)building.BuildingType);
@@ -88,7 +88,7 @@ namespace Settlers
         public Dictionary<BaseMaterial,int> GetBaseMaterial()
         {
             Dictionary<BaseMaterial, int> temp = new Dictionary<BaseMaterial, int>();
-            using (MySqlCommand command = new MySqlCommand("Select ID,Nev,KezdoMennyiseg From Alapanyag", connection))
+            using (MySqlCommand command = new MySqlCommand("SELECT ID,Nev,KezdoMennyiseg FROM Alapanyag", connection))
             {
                 using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
                 {
@@ -108,7 +108,7 @@ namespace Settlers
         {
             List<Building> temp = new List<Building>();
             string[] helper = new string[2];
-            using (MySqlCommand command = new MySqlCommand("Select ID,EpuletTipusID,Koordinata,Statusz From Epulet", connection))
+            using (MySqlCommand command = new MySqlCommand("SELECT ID,EpuletTipusID,Koordinata,Statusz FROM Epulet", connection))
             {
                 using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
                 {
@@ -147,7 +147,7 @@ namespace Settlers
         public int SelectTiles()
         {
             int temp = 0;
-            using (MySqlCommand command = new MySqlCommand("Select id From Mezok", connection))
+            using (MySqlCommand command = new MySqlCommand("SELECT id FROM Mezok", connection))
             {
                 using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
                 {
@@ -165,7 +165,7 @@ namespace Settlers
         /// </summary>
         public void DeleteTiles()
         {
-            using (MySqlCommand command = new MySqlCommand("DELETE FROM Mezok WHere 1", connection))
+            using (MySqlCommand command = new MySqlCommand("DELETE FROM Mezok", connection))
             {
                 command.ExecuteNonQuery();
             }
@@ -177,7 +177,7 @@ namespace Settlers
         /// <param name="line">Hatékonyság miatt, a mezőket soronként töltjük fel</param>
         public void InsertTiles(string line)
         {
-            using (MySqlCommand command = new MySqlCommand("Insert Into Mezok (sor) Values(@line)", connection))
+            using (MySqlCommand command = new MySqlCommand("INSERT INTO Mezok (sor) VALUES(@line)", connection))
             {
                 command.Parameters.AddWithValue("@line", line);
                 command.ExecuteNonQuery();
@@ -192,7 +192,7 @@ namespace Settlers
         {
             List<Tile> temp = new List<Tile>();
             string[] lines = new string[60];
-            using (MySqlCommand command = new MySqlCommand("Select sor From Mezok", connection))
+            using (MySqlCommand command = new MySqlCommand("SELECT sor FROM Mezok", connection))
             {
                 using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
                 {
@@ -223,7 +223,7 @@ namespace Settlers
         /// <param name="count">Darabszám</param>
         public void SaveMaterials(int bMaterialID, int count)
         {
-            using (MySqlCommand command = new MySqlCommand("Insert Into Mentett_alapanyag (alapanyag_id,mennyiseg) Values(@bm, @count)", connection))
+            using (MySqlCommand command = new MySqlCommand("INSERT INTO Mentett_alapanyag (alapanyag_id,mennyiseg) VALUES(@bm, @count)", connection))
             {
                 command.Parameters.AddWithValue("@bm", bMaterialID);
                 command.Parameters.AddWithValue("@count", count);
@@ -235,7 +235,7 @@ namespace Settlers
         /// </summary>
         public void DeleteMaterials()
         {
-            using (MySqlCommand command = new MySqlCommand("DELETE FROM Mentett_alapanyag WHere 1", connection))
+            using (MySqlCommand command = new MySqlCommand("DELETE FROM Mentett_alapanyag", connection))
             {
                 command.ExecuteNonQuery();
             }
@@ -247,7 +247,7 @@ namespace Settlers
         public Dictionary<BaseMaterial, int> GetSavedMaterial()
         {
             Dictionary<BaseMaterial, int> temp = new Dictionary<BaseMaterial, int>();
-            using (MySqlCommand command = new MySqlCommand("Select a.ID,a.Nev,m.Mennyiseg From Alapanyag a INNER JOIN mentett_alapanyag m ON a.id= m.alapanyag_ID", connection))
+            using (MySqlCommand command = new MySqlCommand("SELECT a.ID,a.Nev,m.Mennyiseg From Alapanyag a INNER JOIN mentett_alapanyag m ON a.id= m.alapanyag_ID", connection))
             {
                 using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
                 {
@@ -269,7 +269,7 @@ namespace Settlers
         {
             Production temp = new Production();
             int bTID = (int)b.BuildingType;
-            using (MySqlCommand command = new MySqlCommand("Select a.ID as ID, a.Nev as Nev From Alapanyag_Gyartas gy INNER JOIN Alapanyag a ON gy.KeszAlapanyagID = a.ID WHERE EpuletTipusID = @bTID", connection))
+            using (MySqlCommand command = new MySqlCommand("SELECT a.ID as ID, a.Nev as Nev From Alapanyag_Gyartas gy INNER JOIN Alapanyag a ON gy.KeszAlapanyagID = a.ID WHERE EpuletTipusID = @bTID", connection))
             {
                 command.Parameters.AddWithValue("@bTID", bTID);
                 using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
@@ -281,7 +281,7 @@ namespace Settlers
                     }
                 }
             }
-            using (MySqlCommand command = new MySqlCommand("Select a.ID as ID, a.Nev as Nev,Mennyiseg From Alapanyag_Gyartas gy INNER JOIN Alapanyag a ON gy.AlapanyagID = a.ID WHERE EpuletTipusID = @bTID", connection))
+            using (MySqlCommand command = new MySqlCommand("SELECT a.ID as ID, a.Nev as Nev,Mennyiseg From Alapanyag_Gyartas gy INNER JOIN Alapanyag a ON gy.AlapanyagID = a.ID WHERE EpuletTipusID = @bTID", connection))
             {
                 command.Parameters.AddWithValue("@bTID", bTID);
                 using (MySqlDataReader MySqlDataReader = command.ExecuteReader())
@@ -289,9 +289,6 @@ namespace Settlers
                     while (MySqlDataReader.Read())
                     {
                             temp.BaseMaterials.Add(new BaseMaterial(MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("ID")), MySqlDataReader.GetString(MySqlDataReader.GetOrdinal("Nev"))), MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("Mennyiseg")));
-                            
-                           // temp.BaseMaterials.Add(new BaseMaterial(MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("ID")), MySqlDataReader.GetString(MySqlDataReader.GetOrdinal("Nev"))), MySqlDataReader.GetInt32(MySqlDataReader.GetOrdinal("Mennyiseg")));
-
                     }
                 }
             }

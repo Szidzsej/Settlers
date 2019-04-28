@@ -10,7 +10,7 @@ namespace Settlers
     /// <summary>
     /// Az épületet definiálja
     /// </summary>
-    public class Building 
+    public class Building
     {
         public int ID { get; set; } // Épület azonositoja
         public BuildingTypeEnum BuildingType { get; set; } // Épület Tipusa
@@ -28,36 +28,38 @@ namespace Settlers
         public bool IsMoving { get; set; } // Mozog-e az épület
         public Vector2 Origin; // Épület középpontja
 
-        public Building(int id, Rectangle iRectangle, Texture2D ITexture, BuildingStatus iStatus, BuildingTypeEnum bTID, bool iHasWorker)
+        private int RadiusTime = 0; // Épület körzetének megjelenitési ideje
+
+        public Building(int id, Rectangle Rectangle, Texture2D Texture, BuildingStatus Status, BuildingTypeEnum bTID, bool HasWorker)
         {
-            this.Status = iStatus;
-            this.Rectangle = iRectangle;
-            this.Texture = ITexture;
+            this.Status = Status;
+            this.Rectangle = Rectangle;
+            this.Texture = Texture;
             this.ID = id;
             this.BuildingType = bTID;
             this.Origin = new Vector2(0, 0);
-            this.HasWorker = iHasWorker;
+            this.HasWorker = HasWorker;
             this.BuildTime = 0;
             this.IsItEmpty = false;
             this.WoodStoneCount = 0;
         }
-        public Building(int id, BuildingTypeEnum bTID, Rectangle iRectangle, BuildingStatus iStatus)
+        public Building(int id, BuildingTypeEnum bTID, Rectangle Rectangle, BuildingStatus Status)
         {
             this.ID = id;
             this.BuildingType = bTID;
-            this.Rectangle = iRectangle;
-            this.Status = iStatus;
+            this.Rectangle = Rectangle;
+            this.Status = Status;
             this.BuildTime = 0;
             this.IsItEmpty = false;
             this.WoodStoneCount = 0;
         }
-        public Building(Rectangle iRectangle, Texture2D ITexture, BuildingStatus iStatus, BuildingTypeEnum bTID, bool iHasWorker)
+        public Building(Rectangle Rectangle, Texture2D Texture, BuildingStatus Status, BuildingTypeEnum bTID, bool HasWorker)
         {
-            this.Status = iStatus;
-            this.Rectangle = iRectangle;
-            this.Texture = ITexture;
+            this.Status = Status;
+            this.Rectangle = Rectangle;
+            this.Texture = Texture;
             this.BuildingType = bTID;
-            this.HasWorker = iHasWorker;
+            this.HasWorker = HasWorker;
             this.BuildTime = 0;
             this.IsItEmpty = false;
             this.WoodStoneCount = 0;
@@ -71,7 +73,7 @@ namespace Settlers
         private List<Tile> BuildingsArea(Map map)
         {
             List<Tile> temp = new List<Tile>();
-            int minX = this.Bounds.X - (Globals.TILESIZE*3);
+            int minX = this.Bounds.X - (Globals.TILESIZE * 3);
             if (minX < 0)
                 minX = 0;
             int minY = this.Bounds.Y - (Globals.TILESIZE * 3);
@@ -89,7 +91,7 @@ namespace Settlers
             }
             foreach (var item in map.Tiles)
             {
-                if (((item.Rectangle.X >= minX )&& (item.Rectangle.X <= maxX)) && ((item.Rectangle.Y >= minY) && (item.Rectangle.Y <= maxY)))
+                if (((item.Rectangle.X >= minX) && (item.Rectangle.X <= maxX)) && ((item.Rectangle.Y >= minY) && (item.Rectangle.Y <= maxY)))
                 {
                     temp.Add(item);
                 }
@@ -104,7 +106,7 @@ namespace Settlers
         /// <param name="map">Pálya</param>
         /// <param name="sprite">Kirajzoláshoz szükséges változó</param>
         /// <returns>Vissza a mezőket a közelben</returns>
-        public List<Tile> ColorizeProductionArea(bool colorized, Map map,SpriteBatch sprite)
+        public List<Tile> ColorizeProductionArea(bool colorized ,Map map, SpriteBatch sprite)
         {
             List<Tile> colorizedTiles = BuildingsArea(map);
             foreach (var item in colorizedTiles)
@@ -117,7 +119,7 @@ namespace Settlers
                 {
                     item.TileColor = Color.White;
                 }
-                
+
             }
             return colorizedTiles;
         }
@@ -216,10 +218,10 @@ namespace Settlers
         public void UpdateBuidlingStatus(int ms)
         {
             BuildTime += ms;
-            if (BuildTime>=Globals.CREATEBUILDINGTIME)
+            if (BuildTime >= Globals.CREATEBUILDINGTIME)
             {
                 this.Status = BuildingStatus.Ready;
-               
+
             }
         }
         /// <summary>
@@ -228,48 +230,48 @@ namespace Settlers
         /// <param name="workers">Összes szabad munkás száma</param>
         public void UpdateWorkerStatus(int workers)
         {
-            if (workers > 0  && this.BuildingType != BuildingTypeEnum.House)
+            if (workers > 0 && this.BuildingType != BuildingTypeEnum.House)
             {
-                HasWorker = true;
+                this.HasWorker = true;
             }
         }
 
         /// <summary>
         /// Épület mozgatása
         /// </summary>
-        /// <param name="iDirection">Milyen irányba mozog</param>
-        public void Move(Direction iDirection)
+        /// <param name="Direction">Milyen irányba mozog</param>
+        public void Move(Direction Direction)
         {
-            this.Bounds = Step(iDirection);
+            this.Bounds = Step(Direction);
         }
 
         /// <summary>
         /// Az épület mozgásának az animációja
         /// </summary>
-        /// <param name="iDirection">Melyik irányba mozog</param>
-        public void AnimatedUpdate(Direction iDirection)
+        /// <param name="Direction">Melyik irányba mozog</param>
+        public void AnimatedUpdate(Direction Direction)
         {
             if (!this.IsMoving)
             {
-                this.NextStep = Step(iDirection);
+                this.NextStep = Step(Direction);
                 this.IsMoving = true;
             }
-            var a = Step(iDirection);
+            var a = Step(Direction);
         }
 
         /// <summary>
         /// Az épület tényleges mozgatása, mikor már le lett vizsgálva tud-e az adott irányba mozogni
         /// </summary>
-        /// <param name="iDirection">Melyik irányba mozog</param>
-        public void MoveBuilding(Direction iDirection)
+        /// <param name="Direction">Melyik irányba mozog</param>
+        public void MoveBuilding(Direction Direction)
         {
-            AnimatedUpdate(iDirection);
+            AnimatedUpdate(Direction);
         }
 
         /// <summary>
         /// A kövezkező lépés definiálása
         /// </summary>
-        /// <param name="iDirection">Melyik irányba mozog</param>
+        /// <param name="Direction">Melyik irányba mozog</param>
         /// <returns>Vissza adja a lépés helyének, koordinátáját</returns>
         public Rectangle Step(Direction iDirection)
         {
@@ -303,22 +305,22 @@ namespace Settlers
         /// <returns>Vissza adja az épület tipusát szövegként</returns>
         public string GetTextureName(BuildingTypeEnum bTID)
         {
-            string s = "";
+            string s = string.Empty;
             switch (bTID)
             {
-                case BuildingTypeEnum.Bakery: s=  "bakery"; break;
-                case BuildingTypeEnum.House:  s = "house"; break;
-                case BuildingTypeEnum.Hunter: s = "hunter" ; break;
-                case BuildingTypeEnum.Stonequarry: s = "stonequarry" ; break;
-                case BuildingTypeEnum.Wheatfarm: s = "wheatfarm"  ; break;
-                case BuildingTypeEnum.Well: s = "well"  ; break;
-                case BuildingTypeEnum.Woodcutter: s = "woodcutter"  ; break;
-                case BuildingTypeEnum.Windmill: s = "windmill" ; break;
+                case BuildingTypeEnum.Bakery: s = "bakery"; break;
+                case BuildingTypeEnum.House: s = "house"; break;
+                case BuildingTypeEnum.Hunter: s = "hunter"; break;
+                case BuildingTypeEnum.Stonequarry: s = "stonequarry"; break;
+                case BuildingTypeEnum.Wheatfarm: s = "wheatfarm"; break;
+                case BuildingTypeEnum.Well: s = "well"; break;
+                case BuildingTypeEnum.Woodcutter: s = "woodcutter"; break;
+                case BuildingTypeEnum.Windmill: s = "windmill"; break;
                 default: s = "house"; break;
             }
             return s;
         }
 
-        
+
     }
 }

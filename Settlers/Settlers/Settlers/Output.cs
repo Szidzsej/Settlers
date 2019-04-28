@@ -20,13 +20,13 @@ namespace Settlers
         public SpriteFont FontStyle { get; set; } // Szöveg betű típusa
         public bool IsItWorker { get; set; } // Szöveg a munkások számát írja-e ki
 
-        public Output(string iName, string iText,  Vector2 iPosition, Color iColor, SpriteFont iFontStyle,bool worker)
+        public Output(string Name, string Text,  Vector2 Position, Color Color, SpriteFont FontStyle,bool worker)
         {
-            this.Name = iName;
-            this.Text = iText;
-            this.Position = iPosition;
-            this.Color = iColor;
-            this.FontStyle = iFontStyle;
+            this.Name = Name;
+            this.Text = Text;
+            this.Position = Position;
+            this.Color = Color;
+            this.FontStyle = FontStyle;
             this.IsItWorker = worker;
         }
         /// <summary>
