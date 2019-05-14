@@ -107,36 +107,6 @@ VALUES
 (6,5,2,6),
 (7,NULL,0,8);
 
-create table IF NOT EXISTS Epulet_Queue
-(
-	EpuletID INT
-	,AlapanyagID INT
-	,Mennyiseg INT
-	,FOREIGN KEY (EpuletID) REFERENCES Epulet(ID)
-	,FOREIGN KEY (AlapanyagID) REFERENCES Alapanyag(ID)
-);
-CREATE TABLE IF NOT EXISTS Munkas
-(
-	ID INT AUTO_INCREMENT PRIMARY KEY
-	,Nev VARCHAR(200)
-);
-Insert into Munkas (Nev)
-Values
-("favago"),
-("kofarago"),
-("farmer"),
-("viz hordo"),
-("molnar"),
-("pek"),
-("vadasz");
-
-CREATE TABLE IF NOT EXISTS Epulet_Munkas
-(
-	EpuletID INT
-	,MunkasID INT
-	,FOREIGN KEY (EpuletID) REFERENCES Epulet(ID)
-	,FOREIGN KEY (MunkasID) REFERENCES Munkas(ID)
-);
 
 Create table IF NOT EXISTS Mezok
 (
